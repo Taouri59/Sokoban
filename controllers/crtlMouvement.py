@@ -1,4 +1,4 @@
-# importation des librairie nécessaire
+# importation des librairies nécessaires
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QKeyEvent
 
@@ -9,3 +9,4 @@ class CrtlMouvement(QWidget):
 
     def keyPressEvent(self, evt: QKeyEvent) -> None:
         print("Key pressed")
+        

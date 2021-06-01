@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# importation des librairie nécessaire
+# importation des librairies nécessaires
 import sys
 from PyQt5.QtWidgets import QApplication
 from model.grid import Grid
@@ -14,6 +14,7 @@ class App(QApplication):
         self.__model = Grid()
         self.__controller = CrtlMouvement()
         self.__view = GridView(self.__model, self.__controller)
+        self.__view.setWindowTitle("Sokoban")
         self.__view.show()
 
 

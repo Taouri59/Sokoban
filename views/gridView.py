@@ -1,5 +1,5 @@
-# importation des librairie utile
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel
+# importation des librairies utiles
+from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
 
@@ -21,7 +21,8 @@ class GridView(QMainWindow):
         self.__menuJeu.addAction(self.__quitAction)
         # statut bar
         self.__statutBar = self.statusBar()
-        self.__statutBar.addPermanentWidget(QLabel("number of mouvement : 0"),1)
+        self.__statutBar.addPermanentWidget(QLabel("number of movements : 0"),1)
         # controller / central widget
         self.setCentralWidget(self.__controller)
         self.__controller.setFocus()
+

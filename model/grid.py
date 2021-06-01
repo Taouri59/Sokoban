@@ -1,4 +1,4 @@
-# importation des librairie nécessaire
+# importation des librairies nécessaires
 
 class Grid():
     def __init__(self):
