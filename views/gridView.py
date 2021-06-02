@@ -14,14 +14,23 @@ class GridView(QMainWindow):
         # menu
         self.__menuBar = self.menuBar()
         self.__menuJeu = self.__menuBar.addMenu("Jeu")
-        self.__restartAction = QAction("Restart", self)
-        self.__quitAction = QAction("Quit", self)
+        self.__menuHelp = self.__menuBar.addMenu("Aide")
+
+        self.__restartAction = QAction("Rejouer", self)
+        self.__quitAction = QAction("Quitter", self)
+        self.__helpAction = QAction("Afficher l'aide", self)
+
+
+        self.__helpAction.triggered.connect(quit) #A modifier pour expliquer le but du jeu
         self.__quitAction.triggered.connect(quit)
         self.__menuJeu.addAction(self.__restartAction)
         self.__menuJeu.addAction(self.__quitAction)
-        # statut bar
+        self.__menuHelp.addAction(self.__helpAction)
+
+        # bottom statut bar
         self.__statutBar = self.statusBar()
-        self.__statutBar.addPermanentWidget(QLabel("number of movements : 0"),1)
+        self.__statutBar.addPermanentWidget(QLabel("Number of Movements : 0"),1)
+
         # controller / central widget
         self.setCentralWidget(self.__controller)
         self.__controller.setFocus()

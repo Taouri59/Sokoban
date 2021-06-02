@@ -9,4 +9,5 @@ class CrtlMouvement(QWidget):
 
     def keyPressEvent(self, evt: QKeyEvent) -> None:
         print("Key pressed")
-        
+
+
