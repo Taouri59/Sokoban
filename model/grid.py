@@ -5,7 +5,7 @@ class Grid():
         self.__nbCaseX = 10
         self.__nbCaseY = 10
         self.__tailleCase = 64
-        self.__grid = 0
+        self.__grid = []
         self.generateGrid()
 
     def getNbCaseX(self):
@@ -17,7 +17,11 @@ class Grid():
     def getTailleCase(self):
         return self.__tailleCase
 
+    def getGrid(self):
+        return self.__grid
+
     def generateGrid(self):
-        self.__grid = [['', '', '', '', '', '', '', ''] for i in range(8)]
-
-
+        for i in range(self.__nbCaseY):
+            self.__grid.append([])
+            for j in range(self.__nbCaseX):
+                self.__grid[i].append(0)
