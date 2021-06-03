@@ -14,6 +14,8 @@ class App(QApplication):
         self.__model = Grid()
         self.__controller = CrtlMouvement()
         self.__view = GridView(self.__model, self.__controller)
+        self.__controller.setView(self.__view)
+        self.__model.setView(self.__view)
         self.__view.setWindowTitle("Sokoban")
         self.__view.show()
 
