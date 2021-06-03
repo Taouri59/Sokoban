@@ -41,6 +41,8 @@ class Grid():
         if self.__grid[new_ligne][new_colonne] == 1 or self.__grid[new_ligne][new_colonne] == 3:
             return
         if self.__grid[new_ligne][new_colonne] == 2:
+            if not (0 <= new_ligne+sens[0] < self.__nbCaseY and 0 <= new_colonne+sens[1] < self.getNbCaseX()):
+                return
             if self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] == 1 or self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] == 2:
                 return
             if self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] == 3:
@@ -58,27 +60,40 @@ class Grid():
             self.setPosJoueur(new_ligne, new_colonne)
         self.__view.incrementNbMovement()
         self.__view.updateView()
+        if self.isGagner():
+            self.__view.ecranVictoire()
+
 
 
     def generateGrid(self):
-        for i in range(self.__nbCaseY):
-            self.__grid.append([])
-            for j in range(self.__nbCaseX):
-                if i==self.__posJoueur[0] and j==self.__posJoueur[1]:
-                    self.__grid[i].append(4)
-                    continue
-                if i==4 and j==3:
-                    self.__grid[i].append(1)
-                    continue
-                if i==5 and j==7:
-                    self.__grid[i].append(2)
-                    continue
-                if i==6 and j==4:
-                    self.__grid[i].append(3)
-                    continue
-                self.__grid[i].append(0)
+        with open("grids/grid0.txt", "r") as file:
+            line = file.readline()
+            i = 0
+            while line:
+                self.__grid.append([])
+                n = ""
+                j = 0
+                for char in line:
+                    if char != " ":
+                        n += char
+                        continue
+                    self.__grid[i].append(int(n))
+                    if int(n) == 4:
+                        self.__posJoueur = [i, j]
+                    j += 1
+                    n = ""
+                self.__grid[i].append(int(n))
+                line = file.readline()
+                i += 1
 
     def regenerateGrid(self):
         self.__grid = []
         self.__posJoueur = [self.__nbCaseY//2, self.__nbCaseX//2]
         self.generateGrid()
+
+    def isGagner(self) -> bool:
+        for ligne in self.__grid:
+            for n in ligne:
+                if n == 3:
+                    return False
+        return True

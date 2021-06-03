@@ -31,9 +31,12 @@ class GridView(QMainWindow):
         # bottom statut bar
         self.__statutBar = self.statusBar()
         self.__nbOfMovements = 0
+        self.__labelNbMove = QLabel()
+        self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
         self.__labelStatut = QLabel()
-        self.__labelStatut.setText("Number of Movements : "+str(self.__nbOfMovements))
-        self.__statutBar.addPermanentWidget(self.__labelStatut, 1)
+        self.__labelStatut.setText("")
+        self.__statutBar.addPermanentWidget(self.__labelNbMove, 1)
+        self.__statutBar.addPermanentWidget(self.__labelStatut, 2)
 
 
         # controller / central widget + GridLayout
@@ -46,6 +49,9 @@ class GridView(QMainWindow):
 
     def getModel(self):
         return self.__model
+
+    def getController(self):
+        return self.__controller
 
     def incrementNbMovement(self):
         self.__nbOfMovements += 1
@@ -80,9 +86,16 @@ class GridView(QMainWindow):
                     case.setStyleSheet("background-color: cyan; border: 1px solid black")
                 self.__GridLayout.addWidget(case,i,j)
         # update nb movements
-        self.__labelStatut.setText("Number of Movements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
+
+    def ecranVictoire(self):
+        self.setFocus()
+        self.__labelStatut.setText("YOU WIN !!!")
 
     def restart(self):
+        self.__labelStatut.setText("")
+        self.setCentralWidget(self.__controller)
         self.__model.regenerateGrid()
         self.__nbOfMovements = 0
         self.updateView()
+        self.__controller.setFocus()
