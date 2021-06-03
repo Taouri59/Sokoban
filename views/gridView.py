@@ -1,4 +1,5 @@
 # importation des librairies utiles
+from PyQt5.QtGui import QImage
 from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
@@ -71,20 +72,28 @@ class GridView(QMainWindow):
                 case = QWidget()
                 case.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
                 if grid[i][j] == 0:  # case vide
-                    case.setStyleSheet("background-color: gray; border: 1px solid black")
+                    case.setStyleSheet("background-image: url(images/SOL.png);")
                 elif grid[i][j] == 1:  # mur
-                    case.setStyleSheet("background-color: red; border: 1px solid black")
+                    case.setStyleSheet("background-image: url(images/MUR.png);")
                 elif grid[i][j] == 2:  # caisse
-                    case.setStyleSheet("background-color: orange; border: 1px solid black")
+                    case.setStyleSheet("background-image: url(images/BOX.png);")
                 elif grid[i][j] == 3:  # trou
-                    case.setStyleSheet("background-color: brown; border: 1px solid black")
+                    case.setStyleSheet("background-image: url(images/TROU.png);")
                 elif grid[i][j] == 4:  # joueur
-                    case.setStyleSheet("background-color: blue; border: 1px solid black")
+                    case2 = QWidget()
+                    case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
+                    case2.setStyleSheet("background-image: url(images/SOL.png);")
+                    self.__GridLayout.addWidget(case2, i, j)
+                    case.setStyleSheet("background-image: url(images/Perso.png);")
                 elif grid[i][j] == 5:  # trou boucher
-                    case.setStyleSheet("background-color: green; border: 1px solid black")
+                    case.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
                 elif grid[i][j] == 6:  # trou boucher + joueur
-                    case.setStyleSheet("background-color: cyan; border: 1px solid black")
-                self.__GridLayout.addWidget(case,i,j)
+                    case2 = QWidget()
+                    case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
+                    case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    self.__GridLayout.addWidget(case2, i, j)
+                    case.setStyleSheet("background-image: url(images/Perso.png);")
+                self.__GridLayout.addWidget(case, i, j)
         # update nb movements
         self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
 
