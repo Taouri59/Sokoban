@@ -22,7 +22,7 @@ class GridView(QMainWindow):
         self.__quitAction = QAction("Quitter", self)
         self.__helpAction = QAction("Afficher l'aide", self)
 
-        self.__helpAction.triggered.connect(self.helpView())  # A modifier pour expliquer le but du jeu
+        self.__helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         self.__quitAction.triggered.connect(quit)
         self.__restartAction.triggered.connect(self.restart)
 
