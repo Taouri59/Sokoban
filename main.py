@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication
 from model.grid import Grid
 from views.gridView import GridView
 from controllers.crtlMouvement import CrtlMouvement
+from PyQt5.QtMultimedia import QSound
 
 
 class App(QApplication):

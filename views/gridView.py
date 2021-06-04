@@ -33,7 +33,7 @@ class GridView(QMainWindow):
         self.__statutBar = self.statusBar()
         self.__nbOfMovements = 0
         self.__labelNbMove = QLabel()
-        self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
         self.__labelStatut = QLabel()
         self.__labelStatut.setText("")
         self.__statutBar.addPermanentWidget(self.__labelNbMove, 1)

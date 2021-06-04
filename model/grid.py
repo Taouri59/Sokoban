@@ -1,4 +1,5 @@
 # importation des librairies nécessaires
+from PyQt5.QtMultimedia import QSound
 
 class Grid():
     def __init__(self):
@@ -9,6 +10,11 @@ class Grid():
         self.__posJoueur = [self.__nbCaseY//2, self.__nbCaseX//2]
         self.__view = None
         self.generateGrid()
+        self.__victorySound = QSound('sounds/victorySound.wav')
+        self.__defeatSound = QSound('sounds/defeatSound.wav')
+        self.__boxDrop = QSound('sounds/boxDrop.wav')
+
+        
 
     def setView(self, view):
         self.__view = view
@@ -36,16 +42,16 @@ class Grid():
     def deplaceCaisse(self, pos_lig, pos_col, sens) -> bool:
         newPosLig = pos_lig + sens[0]
         newPosCol = pos_col + sens[1]
-        # Verifie que la prochaine position de la caisse et dans la grille
+        # Verifie que la prochaine position de la caisse est dans la grille
         if not (0 <= newPosLig < self.__nbCaseY and 0 <= newPosCol < self.getNbCaseX()):
             return False
-        # verifie que ce n'est pas un mur, ni une autre caisse, ni une caisse sur un trou reboucher
+        # verifie que ce n'est pas un mur, ni une autre caisse, ni une caisse sur un trou rebouché
         elif self.__grid[newPosLig][newPosCol] in [1, 2, 7]:
             return False
         # si c'est un trou
         elif self.__grid[newPosLig][newPosCol] == 3:
             self.__grid[newPosLig][newPosCol] = 5
-        # si c'est un trou reboucher
+        # si c'est un trou rebouché
         elif self.__grid[newPosLig][newPosCol] == 5:
             self.__grid[newPosLig][newPosCol] = 7
         # sinon
@@ -79,11 +85,11 @@ class Grid():
                 return
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
-        # si c'est un trou reboucher
+        # si c'est un trou rebouché
         elif self.__grid[new_ligne][new_colonne] == 5:
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
-        # si le joueur est sur un trou reboucher
+        # si le joueur est sur un trou rebouché
         if self.__grid[new_ligne-sens[0]][new_colonne-sens[1]] == 6:
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
@@ -94,7 +100,6 @@ class Grid():
         self.__view.updateView()
         if self.isGagner():
             self.__view.ecranVictoire()
-
 
 
     def generateGrid(self):
@@ -129,3 +134,16 @@ class Grid():
                 if n == 3:
                     return False
         return True
+
+    def playVictorySound(self):
+        self.__victorySound.play()
+
+    def playBoxDropSound(self):
+        self.__boxDrop.play()
+
+    def playDefeatSound(self):
+        self.__defeatSound.play()
+
+
+
+
