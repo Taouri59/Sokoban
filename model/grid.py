@@ -33,30 +33,62 @@ class Grid():
         self.__grid[pos_ligne][pos_colonne] = 4
         self.__posJoueur = [pos_ligne, pos_colonne]
 
+    def deplaceCaisse(self, pos_lig, pos_col, sens) -> bool:
+        newPosLig = pos_lig + sens[0]
+        newPosCol = pos_col + sens[1]
+        # Verifie que la prochaine position de la caisse et dans la grille
+        if not (0 <= newPosLig < self.__nbCaseY and 0 <= newPosCol < self.getNbCaseX()):
+            return False
+        # verifie que ce n'est pas un mur, ni une autre caisse, ni une caisse sur un trou reboucher
+        elif self.__grid[newPosLig][newPosCol] in [1, 2, 7]:
+            return False
+        # si c'est un trou
+        elif self.__grid[newPosLig][newPosCol] == 3:
+            self.__grid[newPosLig][newPosCol] = 5
+        # si c'est un trou reboucher
+        elif self.__grid[newPosLig][newPosCol] == 5:
+            self.__grid[newPosLig][newPosCol] = 7
+        # sinon
+        else:
+            self.__grid[newPosLig][newPosCol] = 2
+        self.__grid[pos_lig][pos_col] = 0
+        return True
+
     def deplacerJoueur(self, sens):
         new_ligne = self.__posJoueur[0]+sens[0]
         new_colonne = self.__posJoueur[1]+sens[1]
+        # Verifie que la prochaine position du joueur et dans la grille
         if not (0 <= new_ligne < self.__nbCaseY and 0 <= new_colonne < self.getNbCaseX()):
             return
-        if self.__grid[new_ligne][new_colonne] == 1 or self.__grid[new_ligne][new_colonne] == 3:
+        # Verifie que ce n'est pas un mur ou un trou
+        elif self.__grid[new_ligne][new_colonne] in [1, 3]:
             return
-        if self.__grid[new_ligne][new_colonne] == 2:
-            if not (0 <= new_ligne+sens[0] < self.__nbCaseY and 0 <= new_colonne+sens[1] < self.getNbCaseX()):
+        # Si il y a une caisse
+        elif self.__grid[new_ligne][new_colonne] == 2:
+            if not self.deplaceCaisse(new_ligne, new_colonne, sens):
                 return
-            if self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] == 1 or self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] == 2:
-                return
-            if self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] == 3:
-                self.__grid[new_ligne+sens[0]][new_colonne+sens[1]] = 5
+            # si le joueur est sur un trou reboucher
+            if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
+                self.setPosJoueur(new_ligne, new_colonne)
+                self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
             else:
-                self.__grid[new_ligne + sens[0]][new_colonne + sens[1]] = 2
-            self.__grid[new_ligne][new_colonne] = 0
-        if self.__grid[new_ligne][new_colonne] == 5:
+                self.setPosJoueur(new_ligne, new_colonne)
+        # si c'est une caisse sur un trou
+        elif self.__grid[new_ligne][new_colonne] == 7:
+            if not self.deplaceCaisse(new_ligne, new_colonne, sens):
+                return
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
-        elif self.__grid[new_ligne-sens[0]][new_colonne-sens[1]] == 6:
+        # si c'est un trou reboucher
+        elif self.__grid[new_ligne][new_colonne] == 5:
+            self.setPosJoueur(new_ligne, new_colonne)
+            self.__grid[new_ligne][new_colonne] = 6
+        # si le joueur est sur un trou reboucher
+        if self.__grid[new_ligne-sens[0]][new_colonne-sens[1]] == 6:
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
-        else:
+        # si c'est une case vide
+        if self.__grid[new_ligne][new_colonne] == 0:
             self.setPosJoueur(new_ligne, new_colonne)
         self.__view.incrementNbMovement()
         self.__view.updateView()

@@ -93,6 +93,12 @@ class GridView(QMainWindow):
                     case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
                     self.__GridLayout.addWidget(case2, i, j)
                     case.setStyleSheet("background-image: url(images/Perso.png);")
+                elif grid[i][j] == 7:  # trou boucher + caisse
+                    case2 = QWidget()
+                    case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
+                    case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    self.__GridLayout.addWidget(case2, i, j)
+                    case.setStyleSheet("background-image: url(images/BOX.png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
         self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
