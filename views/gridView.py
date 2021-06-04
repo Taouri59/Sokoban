@@ -1,6 +1,7 @@
 # importation des librairies utiles
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget
+from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog
+from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
 
@@ -21,7 +22,7 @@ class GridView(QMainWindow):
         self.__quitAction = QAction("Quitter", self)
         self.__helpAction = QAction("Afficher l'aide", self)
 
-        self.__helpAction.triggered.connect(quit)  # A modifier pour expliquer le but du jeu
+        self.__helpAction.triggered.connect(self.helpView())  # A modifier pour expliquer le but du jeu
         self.__quitAction.triggered.connect(quit)
         self.__restartAction.triggered.connect(self.restart)
 
@@ -114,3 +115,13 @@ class GridView(QMainWindow):
         self.__nbOfMovements = 0
         self.updateView()
         self.__controller.setFocus()
+
+    def helpView(self):
+        dialog = QDialog()
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.setWindowTitle("Help")
+
+        label = QLabel("<h1> J'ai besoin d'aide </h1>", parent=dialog)
+        label.show()
+        dialog.exec_()
+
