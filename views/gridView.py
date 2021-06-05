@@ -125,3 +125,4 @@ class GridView(QMainWindow):
         label.show()
         dialog.exec_()
 
+
