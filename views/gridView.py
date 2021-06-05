@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QG
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
+from views.apparenceView import ApparenceView
 
 
 class GridView(QMainWindow):
@@ -12,6 +13,7 @@ class GridView(QMainWindow):
         self.__model = model
         self.__controller = controller
         self.__theme = "Naruto"
+        self.__secondView = None
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
@@ -28,7 +30,7 @@ class GridView(QMainWindow):
         self.__helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         self.__quitAction.triggered.connect(quit)
         self.__restartAction.triggered.connect(self.restart)
-        self.__apparenceAction.triggered.connect(quit)
+        self.__apparenceAction.triggered.connect(self.apparenceView)
 
         self.__menuJeu.addAction(self.__restartAction)
         self.__menuJeu.addAction(self.__quitAction)
@@ -53,6 +55,12 @@ class GridView(QMainWindow):
         self.__controller.setFocus()
 
         self.updateView()
+
+    def setTheme(self, theme: str):
+        self.__theme = theme
+
+    def getTheme(self):
+        return self.__theme
 
     def getModel(self):
         return self.__model
@@ -129,3 +137,11 @@ class GridView(QMainWindow):
         label = QLabel("<h1> J'ai besoin d'aide </h1>", parent=dialog)
         label.show()
         dialog.exec_()
+
+    def apparenceView(self):
+        self.__secondView = ApparenceView(self)
+        self.__secondView.show()
+
+    def closeSecondView(self):
+        self.__secondView.close()
+        self.__secondView = None
