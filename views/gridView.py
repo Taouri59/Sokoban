@@ -11,24 +11,29 @@ class GridView(QMainWindow):
         super(GridView, self).__init__()
         self.__model = model
         self.__controller = controller
+        self.__theme = "Naruto"
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
         self.__menuBar = self.menuBar()
         self.__menuJeu = self.__menuBar.addMenu("Jeu")
         self.__menuHelp = self.__menuBar.addMenu("Aide")
+        self.__menuSettings = self.__menuBar.addMenu("Options")
 
         self.__restartAction = QAction("Rejouer", self)
         self.__quitAction = QAction("Quitter", self)
         self.__helpAction = QAction("Afficher l'aide", self)
+        self.__apparenceAction = QAction("Apparence...", self)
 
         self.__helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         self.__quitAction.triggered.connect(quit)
         self.__restartAction.triggered.connect(self.restart)
+        self.__apparenceAction.triggered.connect(quit)
 
         self.__menuJeu.addAction(self.__restartAction)
         self.__menuJeu.addAction(self.__quitAction)
         self.__menuHelp.addAction(self.__helpAction)
+        self.__menuSettings.addAction(self.__apparenceAction)
 
         # bottom statut bar
         self.__statutBar = self.statusBar()
@@ -73,33 +78,33 @@ class GridView(QMainWindow):
                 case = QWidget()
                 case.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
                 if grid[i][j] == 0:  # case vide
-                    case.setStyleSheet("background-image: url(images/SOL.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Sol.png);")
                 elif grid[i][j] == 1:  # mur
-                    case.setStyleSheet("background-image: url(images/MUR.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Mur.png);")
                 elif grid[i][j] == 2:  # caisse
-                    case.setStyleSheet("background-image: url(images/BOX.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
                 elif grid[i][j] == 3:  # trou
-                    case.setStyleSheet("background-image: url(images/TROU.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou.png);")
                 elif grid[i][j] == 4:  # joueur
                     case2 = QWidget()
                     case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/SOL.png);")
+                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Sol.png);")
                     self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/Perso.png);")
-                elif grid[i][j] == 5:  # trou bouché
-                    case.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Perso.png);")
+                elif grid[i][j] == 5:  # trou boucher
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
                 elif grid[i][j] == 6:  # trou boucher + joueur
                     case2 = QWidget()
                     case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
                     self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/Perso.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Perso.png);")
                 elif grid[i][j] == 7:  # trou boucher + caisse
                     case2 = QWidget()
                     case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
                     self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/BOX.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
         self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
@@ -127,4 +132,3 @@ class GridView(QMainWindow):
         label.setFixedWidth(500)
 
         dialog.exec_()
-
