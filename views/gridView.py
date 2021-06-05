@@ -1,6 +1,6 @@
 # importation des librairies utiles
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog
+from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog, QVBoxLayout
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
@@ -107,7 +107,7 @@ class GridView(QMainWindow):
                     case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
-        self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
 
     def ecranVictoire(self):
         self.setFocus()
@@ -122,10 +122,13 @@ class GridView(QMainWindow):
         self.__controller.setFocus()
 
     def helpView(self):
+
         dialog = QDialog()
         dialog.setAttribute(Qt.WA_DeleteOnClose)
-        dialog.setWindowTitle("Help")
+        dialog.setWindowTitle("Aide")
+        dialog.setFixedSize(500, 500)
+        label = QLabel("<h1>Aide du jeu !</h1><p>Le but du jeu est de combler les trous en y plaçant les différentes pierres.</p><p>Vous pouvez vous déplacer en utilisant :</p><p> fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> fléche bas ( ou 's' ) pour aller vers le bas;</p><p> fléche gauche ( ou 'q' ) pour aller vers la gauche;</p><p> fléche droit ( ou 'd' ) pour aller vers la droite;</p>", parent=dialog)
+        label.setFixedWidth(500)
+        label.setFixedWidth(500)
 
-        label = QLabel("<h1> J'ai besoin d'aide </h1>", parent=dialog)
-        label.show()
         dialog.exec_()
