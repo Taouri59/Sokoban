@@ -1,6 +1,6 @@
 # importation des librairies utiles
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
@@ -11,24 +11,29 @@ class GridView(QMainWindow):
         super(GridView, self).__init__()
         self.__model = model
         self.__controller = controller
+        self.__theme = "Naruto"
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
         self.__menuBar = self.menuBar()
         self.__menuJeu = self.__menuBar.addMenu("Jeu")
         self.__menuHelp = self.__menuBar.addMenu("Aide")
+        self.__menuSettings = self.__menuBar.addMenu("Options")
 
         self.__restartAction = QAction("Rejouer", self)
         self.__quitAction = QAction("Quitter", self)
         self.__helpAction = QAction("Afficher l'aide", self)
+        self.__apparenceAction = QAction("Apparence...", self)
 
         self.__helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         self.__quitAction.triggered.connect(quit)
         self.__restartAction.triggered.connect(self.restart)
+        self.__apparenceAction.triggered.connect(quit)
 
         self.__menuJeu.addAction(self.__restartAction)
         self.__menuJeu.addAction(self.__quitAction)
         self.__menuHelp.addAction(self.__helpAction)
+        self.__menuSettings.addAction(self.__apparenceAction)
 
         # bottom statut bar
         self.__statutBar = self.statusBar()
@@ -73,36 +78,36 @@ class GridView(QMainWindow):
                 case = QWidget()
                 case.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
                 if grid[i][j] == 0:  # case vide
-                    case.setStyleSheet("background-image: url(images/SOL.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Sol.png);")
                 elif grid[i][j] == 1:  # mur
-                    case.setStyleSheet("background-image: url(images/MUR.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Mur.png);")
                 elif grid[i][j] == 2:  # caisse
-                    case.setStyleSheet("background-image: url(images/BOX.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
                 elif grid[i][j] == 3:  # trou
-                    case.setStyleSheet("background-image: url(images/TROU.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou.png);")
                 elif grid[i][j] == 4:  # joueur
                     case2 = QWidget()
                     case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/SOL.png);")
+                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Sol.png);")
                     self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/Perso.png);")
-                elif grid[i][j] == 5:  # trou bouché
-                    case.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Perso.png);")
+                elif grid[i][j] == 5:  # trou boucher
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
                 elif grid[i][j] == 6:  # trou boucher + joueur
                     case2 = QWidget()
                     case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
                     self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/Perso.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Perso.png);")
                 elif grid[i][j] == 7:  # trou boucher + caisse
                     case2 = QWidget()
                     case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/TROU_BOUCHER.png);")
+                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
                     self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/BOX.png);")
+                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
-        self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
 
     def ecranVictoire(self):
         self.setFocus()
@@ -117,14 +122,10 @@ class GridView(QMainWindow):
         self.__controller.setFocus()
 
     def helpView(self):
-
         dialog = QDialog()
         dialog.setAttribute(Qt.WA_DeleteOnClose)
-        dialog.setWindowTitle("Aide")
-        dialog.setFixedSize(500, 500)
-        label = QLabel("<h1>Aide du jeu !</h1><p>Le but du jeu est de combler les trous en y plaçant les différentes pierres.</p><p>Vous pouvez vous déplacer en utilisant :</p><p> fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> fléche bas ( ou 's' ) pour aller vers le bas;</p><p> fléche gauche ( ou 'q' ) pour aller vers la gauche;</p><p> fléche droit ( ou 'd' ) pour aller vers la droite;</p>", parent=dialog)
-        label.setFixedWidth(500)
-        label.setFixedWidth(500)
+        dialog.setWindowTitle("Help")
 
+        label = QLabel("<h1> J'ai besoin d'aide </h1>", parent=dialog)
+        label.show()
         dialog.exec_()
-

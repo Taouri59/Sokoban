@@ -14,6 +14,8 @@ class Grid():
         self.__defeatSound = QSound('sounds/defeatSound.wav')
         self.__boxDrop = QSound('sounds/boxDrop.wav')
 
+        
+
     def setView(self, view):
         self.__view = view
 
@@ -49,7 +51,7 @@ class Grid():
         # si c'est un trou
         elif self.__grid[newPosLig][newPosCol] == 3:
             self.__grid[newPosLig][newPosCol] = 5
-            self.playBoxDropSound()
+
         # si c'est un trou rebouché
         elif self.__grid[newPosLig][newPosCol] == 5:
             self.__grid[newPosLig][newPosCol] = 7
@@ -62,7 +64,7 @@ class Grid():
     def deplacerJoueur(self, sens):
         new_ligne = self.__posJoueur[0]+sens[0]
         new_colonne = self.__posJoueur[1]+sens[1]
-        # Verifie que la prochaine position du joueur est dans la grille
+        # Verifie que la prochaine position du joueur et dans la grille
         if not (0 <= new_ligne < self.__nbCaseY and 0 <= new_colonne < self.getNbCaseX()):
             return
         # Verifie que ce n'est pas un mur ou un trou
@@ -72,7 +74,7 @@ class Grid():
         elif self.__grid[new_ligne][new_colonne] == 2:
             if not self.deplaceCaisse(new_ligne, new_colonne, sens):
                 return
-            # si le joueur est sur un trou rebouché
+            # si le joueur est sur un trou reboucher
             if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
                 self.setPosJoueur(new_ligne, new_colonne)
                 self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
