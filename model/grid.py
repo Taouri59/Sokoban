@@ -49,6 +49,7 @@ class Grid():
         # si c'est un trou
         elif self.__grid[newPosLig][newPosCol] == 3:
             self.__grid[newPosLig][newPosCol] = 5
+            self.playBoxDropSound()
 
         # si c'est un trou rebouché
         elif self.__grid[newPosLig][newPosCol] == 5:
