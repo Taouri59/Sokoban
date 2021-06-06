@@ -1,6 +1,6 @@
 # importation des librairies utiles
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, QDialog
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
@@ -17,35 +17,35 @@ class GridView(QMainWindow):
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
-        self.__menuBar = self.menuBar()
-        self.__menuJeu = self.__menuBar.addMenu("Jeu")
-        self.__menuHelp = self.__menuBar.addMenu("Aide")
-        self.__menuSettings = self.__menuBar.addMenu("Options")
+        menuBar = self.menuBar()
+        menuJeu = menuBar.addMenu("Jeu")
+        menuHelp = menuBar.addMenu("Aide")
+        menuSettings = menuBar.addMenu("Options")
 
-        self.__restartAction = QAction("Rejouer", self)
-        self.__quitAction = QAction("Quitter", self)
-        self.__helpAction = QAction("Afficher l'aide", self)
-        self.__apparenceAction = QAction("Apparence...", self)
+        restartAction = QAction("Rejouer", self)
+        quitAction = QAction("Quitter", self)
+        helpAction = QAction("Afficher l'aide", self)
+        apparenceAction = QAction("Apparence...", self)
 
-        self.__helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
-        self.__quitAction.triggered.connect(quit)
-        self.__restartAction.triggered.connect(self.restart)
-        self.__apparenceAction.triggered.connect(self.apparenceView)
+        helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
+        quitAction.triggered.connect(quit)
+        restartAction.triggered.connect(self.restart)
+        apparenceAction.triggered.connect(self.apparenceView)
 
-        self.__menuJeu.addAction(self.__restartAction)
-        self.__menuJeu.addAction(self.__quitAction)
-        self.__menuHelp.addAction(self.__helpAction)
-        self.__menuSettings.addAction(self.__apparenceAction)
+        menuJeu.addAction(restartAction)
+        menuJeu.addAction(quitAction)
+        menuHelp.addAction(helpAction)
+        menuSettings.addAction(apparenceAction)
 
         # bottom statut bar
-        self.__statutBar = self.statusBar()
+        statutBar = self.statusBar()
         self.__nbOfMovements = 0
         self.__labelNbMove = QLabel()
         self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
         self.__labelStatut = QLabel()
         self.__labelStatut.setText("")
-        self.__statutBar.addPermanentWidget(self.__labelNbMove, 1)
-        self.__statutBar.addPermanentWidget(self.__labelStatut, 2)
+        statutBar.addPermanentWidget(self.__labelNbMove, 1)
+        statutBar.addPermanentWidget(self.__labelStatut, 2)
 
 
         # controller / central widget + GridLayout
