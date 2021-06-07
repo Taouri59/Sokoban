@@ -7,24 +7,15 @@ class ApparenceGrille(QWidget):
     def __init__(self, view):
         self.__view = view
         super(ApparenceGrille, self).__init__()
-        self.setLayout(QHBoxLayout(self))
+        self.setLayout(QVBoxLayout(self))
+        self.setStyleSheet("border: 1px solid gray")
 
-        VBox1 = QWidget()
-        VBox1.setStyleSheet("border: 1px solid gray")
-        VBox1.setLayout(QVBoxLayout(VBox1))
-        VBox1.layout().addWidget(QLabel(" theme"))
-        VBox1.layout().addWidget(QLabel(" 2eme categorie"))
-        VBox1.layout().addWidget(QLabel(" 3eme categorie"))
-        VBox1.adjustSize()
+        self.__apercu = QWidget()
+        self.__apercu.setLayout(QGridLayout(self.__apercu))
+        self.__apercu.setFixedSize(320, 320)
+        self.__apercu.setStyleSheet("background-image: url(images/" + view.getTheme() + "/apercu.png)")
+        self.layout().addWidget(self.__apercu)
 
-        VBox2 = QWidget()
-        VBox2.setStyleSheet("border: 1px solid gray")
-        VBox2.setLayout(QVBoxLayout(VBox2))
-        self.__Grille = QWidget()
-        self.__Grille.setLayout(QGridLayout(self.__Grille))
-        self.__Grille.setFixedSize(320, 320)
-        self.__Grille.setStyleSheet("background-image: url(images/"+view.getTheme()+"/apercu.png)")
-        VBox2.layout().addWidget(self.__Grille)
         HBox1 = QWidget()
         HBox1.setLayout(QHBoxLayout(HBox1))
         HBox1.layout().addWidget(QLabel("Theme :"))
@@ -33,16 +24,13 @@ class ApparenceGrille(QWidget):
             self.__ComboBox.addItem(theme)
         self.__ComboBox.setCurrentText(view.getTheme())
         self.__ComboBox.currentTextChanged.connect(self.changeTheme)
-        self.__ComboBox.setFixedSize(250, 25)
+        self.__ComboBox.setFixedSize(225, 25)
         HBox1.layout().addWidget(self.__ComboBox)
         HBox1.setFixedSize(HBox1.layout().totalMinimumSize())
-        VBox2.layout().addWidget(HBox1)
-
-        self.layout().addWidget(VBox1)
-        self.layout().addWidget(VBox2)
+        self.layout().addWidget(HBox1)
 
     def changeTheme(self):
-        self.__Grille.setStyleSheet("background-image: url(images/" + self.__ComboBox.currentText() + "/apercu.png)")
+        self.__apercu.setStyleSheet("background-image: url(images/" + self.__ComboBox.currentText() + "/apercu.png)")
 
     def apply(self):
         self.__view.setTheme(self.__ComboBox.currentText())
@@ -53,17 +41,8 @@ class ApparenceView(QMainWindow):
     def __init__(self, view):
         super(ApparenceView, self).__init__()
         self.__view = view
-        self.setWindowTitle("Settings - Apparence")
-        self.setFixedSize(640, 480)
-
-        # menu
-        menu = self.menuBar()
-        menu.setStyleSheet("border: 1px solid gray")
-        menuGrille = QAction("Grille", self)
-        menuGrille.triggered.connect(self.apparenceGrille)
-        menu.addAction(menuGrille)
-        menu.addAction(QAction("fenetre", self))
-        menu.addAction(QAction("...", self))
+        self.setWindowTitle("Settings - Theme")
+        self.setFixedSize(340, 450)
 
         # statut bar
         bar = self.statusBar()
@@ -86,6 +65,3 @@ class ApparenceView(QMainWindow):
 
     def apparenceGrille(self):
         self.setCentralWidget(ApparenceGrille(self.__view))
-
-
-

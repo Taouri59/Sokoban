@@ -1,8 +1,11 @@
 # importation des librairies nécessaires
 from PyQt5.QtMultimedia import QSound
+from os import walk
+from random import shuffle
 
 class Grid():
     def __init__(self):
+        self.__level = "grid0.txt"
         self.__nbCaseX = 10
         self.__nbCaseY = 10
         self.__tailleCase = 64
@@ -31,6 +34,19 @@ class Grid():
 
     def getPosJoueur(self):
         return self.__posJoueur
+
+    def changerLevel(self):
+        niveaux = next(walk("grids"))[2]
+        for i in range(len(niveaux)):
+            if niveaux[i] == self.__level:
+                del niveaux[i]
+                if i != len(niveaux):
+                    niveaux[i] = niveaux[-1]
+                break
+        shuffle(niveaux)
+        self.__level = niveaux[0]
+        self.__grid = []
+        self.generateGrid()
 
     def setPosJoueur(self, pos_ligne: int, pos_colonne: int):
         self.__grid[self.__posJoueur[0]][self.__posJoueur[1]] = 0
@@ -103,7 +119,7 @@ class Grid():
 
 
     def generateGrid(self):
-        with open("grids/grid1.txt", "r") as file:
+        with open("grids/"+self.__level, "r") as file:
             line = file.readline()
             i = 0
             while line:

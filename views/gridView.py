@@ -23,19 +23,22 @@ class GridView(QMainWindow):
         menuSettings = menuBar.addMenu("Options")
 
         restartAction = QAction("Rejouer", self)
+        changerNiv = QAction("Changer de niveaux", self)
         quitAction = QAction("Quitter", self)
         helpAction = QAction("Afficher l'aide", self)
-        apparenceAction = QAction("Apparence...", self)
+        themeAction = QAction("Theme", self)
 
         helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         quitAction.triggered.connect(quit)
         restartAction.triggered.connect(self.restart)
-        apparenceAction.triggered.connect(self.apparenceView)
+        themeAction.triggered.connect(self.apparenceView)
+        changerNiv.triggered.connect(self.changerLevel)
 
         menuJeu.addAction(restartAction)
+        menuJeu.addAction(changerNiv)
         menuJeu.addAction(quitAction)
         menuHelp.addAction(helpAction)
-        menuSettings.addAction(apparenceAction)
+        menuSettings.addAction(themeAction)
 
         # bottom statut bar
         statutBar = self.statusBar()
@@ -145,3 +148,7 @@ class GridView(QMainWindow):
     def closeSecondView(self):
         self.__secondView.close()
         self.__secondView = None
+
+    def changerLevel(self):
+        self.__model.changerLevel()
+        self.updateView()
