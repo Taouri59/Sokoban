@@ -103,7 +103,7 @@ class Grid():
 
 
     def generateGrid(self):
-        with open("grids/grid0.txt", "r") as file:
+        with open("grids/grid1.txt", "r") as file:
             line = file.readline()
             i = 0
             while line:
