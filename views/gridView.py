@@ -151,4 +151,5 @@ class GridView(QMainWindow):
 
     def changerLevel(self):
         self.__model.changerLevel()
+        self.restart()
         self.updateView()
