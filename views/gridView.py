@@ -1,10 +1,14 @@
 # importation des librairies utiles
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QLabel, QPushButton, QGridLayout, QWidget, QDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, QDialog, QStackedLayout
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
+<<<<<<< HEAD
 from views.helpView import HelpView
+=======
+from views.apparenceView import ApparenceView
+>>>>>>> b34cd932cd4c89d6647c204d84b38f41cae750c9
 
 
 class GridView(QMainWindow):
@@ -13,39 +17,42 @@ class GridView(QMainWindow):
         self.__model = model
         self.__controller = controller
         self.__theme = "Naruto"
+        self.__secondView = None
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
-        self.__menuBar = self.menuBar()
-        self.__menuJeu = self.__menuBar.addMenu("Jeu")
-        self.__menuHelp = self.__menuBar.addMenu("Aide")
-        self.__menuSettings = self.__menuBar.addMenu("Options")
+        menu = self.menuBar()
+        menu_jeu = menu.addMenu("Jeu")
+        menu_help = menu.addMenu("Aide")
+        menu_settings = menu.addMenu("Options")
 
-        self.__restartAction = QAction("Rejouer", self)
-        self.__quitAction = QAction("Quitter", self)
-        self.__helpAction = QAction("Afficher l'aide", self)
-        self.__apparenceAction = QAction("Apparence...", self)
+        restart_action = QAction("Rejouer", self)
+        changer_niv = QAction("Changer de niveaux", self)
+        quit_action = QAction("Quitter", self)
+        help_action = QAction("Afficher l'aide", self)
+        theme_action = QAction("Theme", self)
 
-        self.__helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
-        self.__quitAction.triggered.connect(quit)
-        self.__restartAction.triggered.connect(self.restart)
-        self.__apparenceAction.triggered.connect(quit)
+        help_action.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
+        quit_action.triggered.connect(quit)
+        restart_action.triggered.connect(self.restart)
+        theme_action.triggered.connect(self.apparenceView)
+        changer_niv.triggered.connect(self.changerLevel)
 
-        self.__menuJeu.addAction(self.__restartAction)
-        self.__menuJeu.addAction(self.__quitAction)
-        self.__menuHelp.addAction(self.__helpAction)
-        self.__menuSettings.addAction(self.__apparenceAction)
+        menu_jeu.addAction(restart_action)
+        menu_jeu.addAction(changer_niv)
+        menu_jeu.addAction(quit_action)
+        menu_help.addAction(help_action)
+        menu_settings.addAction(theme_action)
 
         # bottom statut bar
-        self.__statutBar = self.statusBar()
+        statut_bar = self.statusBar()
         self.__nbOfMovements = 0
         self.__labelNbMove = QLabel()
         self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
         self.__labelStatut = QLabel()
         self.__labelStatut.setText("")
-        self.__statutBar.addPermanentWidget(self.__labelNbMove, 1)
-        self.__statutBar.addPermanentWidget(self.__labelStatut, 2)
-
+        statut_bar.addPermanentWidget(self.__labelNbMove, 1)
+        statut_bar.addPermanentWidget(self.__labelStatut, 2)
 
         # controller / central widget + GridLayout
         self.__GridLayout = QGridLayout(self.__controller)
@@ -54,6 +61,12 @@ class GridView(QMainWindow):
         self.__controller.setFocus()
 
         self.updateView()
+
+    def setTheme(self, theme: str):
+        self.__theme = theme
+
+    def getTheme(self):
+        return self.__theme
 
     def getModel(self):
         return self.__model
@@ -113,10 +126,14 @@ class GridView(QMainWindow):
     def ecranVictoire(self):
         self.setFocus()
         self.__labelStatut.setText("YOU WIN !!!")
+        w = QWidget()
+        w.setFixedSize(self.size().width(), self.size().height())
+        w.setStyleSheet("background-image: url(images/" + self.__theme + "/Bravo.png);")
+        self.__GridLayout.addWidget(w, 0, 0)
+
 
     def restart(self):
         self.__labelStatut.setText("")
-        self.setCentralWidget(self.__controller)
         self.__model.regenerateGrid()
         self.__nbOfMovements = 0
         self.updateView()
@@ -132,3 +149,18 @@ class GridView(QMainWindow):
 
         dialog.exec_()
 
+<<<<<<< HEAD
+=======
+    def apparenceView(self):
+        self.__secondView = ApparenceView(self)
+        self.__secondView.show()
+
+    def closeSecondView(self):
+        self.__secondView.close()
+        self.__secondView = None
+
+    def changerLevel(self):
+        self.__model.changerLevel()
+        self.restart()
+        self.updateView()
+>>>>>>> b34cd932cd4c89d6647c204d84b38f41cae750c9

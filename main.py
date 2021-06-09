@@ -19,7 +19,6 @@ class App(QApplication):
         self.__view.setWindowTitle("Sokoban")
         self.__view.show()
 
-
 # Main
 if __name__ == '__main__':
     app = App(sys.argv)
