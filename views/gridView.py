@@ -1,6 +1,6 @@
 # importation des librairies utiles
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, QDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, QDialog, QStackedLayout
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
@@ -17,39 +17,38 @@ class GridView(QMainWindow):
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
-        menuBar = self.menuBar()
-        menuJeu = menuBar.addMenu("Jeu")
-        menuHelp = menuBar.addMenu("Aide")
-        menuSettings = menuBar.addMenu("Options")
+        menu = self.menuBar()
+        menu_jeu = menu.addMenu("Jeu")
+        menu_help = menu.addMenu("Aide")
+        menu_settings = menu.addMenu("Options")
 
-        restartAction = QAction("Rejouer", self)
-        changerNiv = QAction("Changer de niveaux", self)
-        quitAction = QAction("Quitter", self)
-        helpAction = QAction("Afficher l'aide", self)
-        themeAction = QAction("Theme", self)
+        restart_action = QAction("Rejouer", self)
+        changer_niv = QAction("Changer de niveaux", self)
+        quit_action = QAction("Quitter", self)
+        help_action = QAction("Afficher l'aide", self)
+        theme_action = QAction("Theme", self)
 
-        helpAction.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
-        quitAction.triggered.connect(quit)
-        restartAction.triggered.connect(self.restart)
-        themeAction.triggered.connect(self.apparenceView)
-        changerNiv.triggered.connect(self.changerLevel)
+        help_action.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
+        quit_action.triggered.connect(quit)
+        restart_action.triggered.connect(self.restart)
+        theme_action.triggered.connect(self.apparenceView)
+        changer_niv.triggered.connect(self.changerLevel)
 
-        menuJeu.addAction(restartAction)
-        menuJeu.addAction(changerNiv)
-        menuJeu.addAction(quitAction)
-        menuHelp.addAction(helpAction)
-        menuSettings.addAction(themeAction)
+        menu_jeu.addAction(restart_action)
+        menu_jeu.addAction(changer_niv)
+        menu_jeu.addAction(quit_action)
+        menu_help.addAction(help_action)
+        menu_settings.addAction(theme_action)
 
         # bottom statut bar
-        statutBar = self.statusBar()
+        statut_bar = self.statusBar()
         self.__nbOfMovements = 0
         self.__labelNbMove = QLabel()
         self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
         self.__labelStatut = QLabel()
         self.__labelStatut.setText("")
-        statutBar.addPermanentWidget(self.__labelNbMove, 1)
-        statutBar.addPermanentWidget(self.__labelStatut, 2)
-
+        statut_bar.addPermanentWidget(self.__labelNbMove, 1)
+        statut_bar.addPermanentWidget(self.__labelStatut, 2)
 
         # controller / central widget + GridLayout
         self.__GridLayout = QGridLayout(self.__controller)
@@ -123,10 +122,14 @@ class GridView(QMainWindow):
     def ecranVictoire(self):
         self.setFocus()
         self.__labelStatut.setText("YOU WIN !!!")
+        w = QWidget()
+        w.setFixedSize(self.size().width(), self.size().height())
+        w.setStyleSheet("background-image: url(images/" + self.__theme + "/Bravo.png);")
+        self.__GridLayout.addWidget(w, 0, 0)
+
 
     def restart(self):
         self.__labelStatut.setText("")
-        self.setCentralWidget(self.__controller)
         self.__model.regenerateGrid()
         self.__nbOfMovements = 0
         self.updateView()
