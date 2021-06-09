@@ -52,7 +52,7 @@ class GridView(QMainWindow):
 
         # controller / central widget + GridLayout
         self.__GridLayout = QGridLayout(self.__controller)
-        self.__GridLayout.setContentsMargins(0,0,0,0)
+        self.__GridLayout.setContentsMargins(0,0,7,9)
         self.__controller.setLayout(self.__GridLayout)
         self.setCentralWidget(self.__controller)
         self.__controller.setFocus()
