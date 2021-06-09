@@ -4,11 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, 
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
-<<<<<<< HEAD
-from views.helpView import HelpView
-=======
 from views.apparenceView import ApparenceView
->>>>>>> b34cd932cd4c89d6647c204d84b38f41cae750c9
 
 
 class GridView(QMainWindow):
@@ -149,8 +145,6 @@ class GridView(QMainWindow):
 
         dialog.exec_()
 
-<<<<<<< HEAD
-=======
     def apparenceView(self):
         self.__secondView = ApparenceView(self)
         self.__secondView.show()
@@ -163,4 +157,3 @@ class GridView(QMainWindow):
         self.__model.changerLevel()
         self.restart()
         self.updateView()
->>>>>>> b34cd932cd4c89d6647c204d84b38f41cae750c9
