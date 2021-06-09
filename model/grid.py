@@ -16,6 +16,7 @@ class Grid():
         self.__victorySound = QSound('sounds/victorySound.wav')
         self.__defeatSound = QSound('sounds/defeatSound.wav')
         self.__boxDrop = QSound('sounds/boxDrop.wav')
+        self.__fallingGuy = QSound('sounds/fallingGuy.wav')
 
     def setView(self, view):
         self.__view = view
@@ -160,6 +161,9 @@ class Grid():
 
     def playDefeatSound(self):
         self.__defeatSound.play()
+
+    def playFallingGuy(self):
+        self.__fallingGuy.play()
 
 
 
