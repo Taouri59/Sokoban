@@ -118,7 +118,7 @@ class GridView(QMainWindow):
                     case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
-        self.__labelNbMove.setText("Number of Movements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
 
     def ecranVictoire(self):
         self.setFocus()
