@@ -115,6 +115,7 @@ class Grid():
         self.__view.incrementNbMovement()
         self.__view.updateView()
         if self.isGagner():
+            self.playVictorySound()
             self.__view.ecranVictoire()
 
 

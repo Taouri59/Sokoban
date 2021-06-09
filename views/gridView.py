@@ -121,7 +121,7 @@ class GridView(QMainWindow):
 
     def ecranVictoire(self):
         self.setFocus()
-        self.__labelStatut.setText("YOU WIN !!!")
+        self.__labelStatut.setText("Félicitations ! Vous avez gagné en : " + str(self.__nbOfMovements) + " mouvements !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
         w.setStyleSheet("background-image: url(images/" + self.__theme + "/Bravo.png);")
