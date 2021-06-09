@@ -80,6 +80,7 @@ class Grid():
     def deplacerJoueur(self, sens):
         new_ligne = self.__posJoueur[0]+sens[0]
         new_colonne = self.__posJoueur[1]+sens[1]
+        caisse_deplacer = False
         # Verifie que la prochaine position du joueur est dans la grille
         if not (0 <= new_ligne < self.__nbCaseY and 0 <= new_colonne < self.getNbCaseX()):
             return
@@ -96,12 +97,14 @@ class Grid():
                 self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
             else:
                 self.setPosJoueur(new_ligne, new_colonne)
+            caisse_deplacer = True
         # si c'est une caisse sur un trou
         elif self.__grid[new_ligne][new_colonne] == 7:
             if not self.deplaceCaisse(new_ligne, new_colonne, sens):
                 return
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
+            caisse_deplacer = True
         # si c'est un trou rebouché
         elif self.__grid[new_ligne][new_colonne] == 5:
             self.setPosJoueur(new_ligne, new_colonne)
@@ -115,9 +118,12 @@ class Grid():
             self.setPosJoueur(new_ligne, new_colonne)
         self.__view.incrementNbMovement()
         self.__view.updateView()
-        if self.isGagner():
+        if caisse_deplacer and self.isGagner():
             self.playVictorySound()
             self.__view.ecranVictoire()
+        elif caisse_deplacer and self.isPerdu():
+            self.playDefeatSound()
+            self.__view.ecranDefaite()
 
 
     def generateGrid(self):
@@ -152,6 +158,22 @@ class Grid():
                 if n == 3:
                     return False
         return True
+
+    def isPerdu(self) -> bool:
+        for i in range(len(self.__grid)):
+            for j in range(len(self.__grid[i])):
+                if self.__grid[i][j] == 2:
+                    for k in [-1,1]:
+                        for l in [-1,1]:
+                            if i+k in [-1,len(self.__grid)] and j+l in [-1,len(self.__grid[i])]:
+                                return True
+                            elif i+k in [-1,len(self.__grid)] and self.__grid[i][j+l]==1:
+                                return True
+                            elif j+l in [-1,len(self.__grid[i])] and self.__grid[i+k][j]==1:
+                                return True
+                            elif self.__grid[i][j+l]==1 and self.__grid[i+k][j]==1:
+                                return True
+        return False
 
     def playVictorySound(self):
         self.__victorySound.play()

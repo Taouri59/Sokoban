@@ -8,8 +8,9 @@ from views.apparenceView import ApparenceView
 
 
 class GridView(QMainWindow):
-    def __init__(self, model: Grid, controller: CrtlMouvement):
+    def __init__(self, app, model: Grid, controller: CrtlMouvement):
         super(GridView, self).__init__()
+        self.__app = app
         self.__model = model
         self.__controller = controller
         self.__theme = "Naruto"
@@ -29,7 +30,7 @@ class GridView(QMainWindow):
         theme_action = QAction("Theme", self)
 
         help_action.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
-        quit_action.triggered.connect(quit)
+        quit_action.triggered.connect(self.quit)
         restart_action.triggered.connect(self.restart)
         theme_action.triggered.connect(self.apparenceView)
         changer_niv.triggered.connect(self.changerLevel)
@@ -130,10 +131,11 @@ class GridView(QMainWindow):
 
     def ecranDefaite(self):
         self.setFocus()
-        self.__labelStatut.setText("Vous avez perdu ! Vous avez dépassé les : " + str(self.__nbMaxOfMovements) + " mouvements !")
+        self.__labelStatut.setText("Vous avez perdu ! Vous avez coincé une caisse !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
         w.setStyleSheet("background-image: url(images/" + self.__theme + "/Perdu.png);")
+        self.__GridLayout.addWidget(w, 0, 0)
 
 
     def restart(self):
@@ -165,3 +167,7 @@ class GridView(QMainWindow):
         self.__model.changerLevel()
         self.restart()
         self.updateView()
+
+    def quit(self):
+        exit(0)
+        # self.__app.setView(MainMenu(self.__app))
