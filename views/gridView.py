@@ -128,6 +128,13 @@ class GridView(QMainWindow):
         w.setStyleSheet("background-image: url(images/" + self.__theme + "/Bravo.png);")
         self.__GridLayout.addWidget(w, 0, 0)
 
+    def ecranDefaite(self):
+        self.setFocus()
+        self.__labelStatut.setText("Vous avez perdu ! Vous avez dépassé les : " + str(self.__nbMaxOfMovements) + " mouvements !")
+        w = QWidget()
+        w.setFixedSize(self.size().width(), self.size().height())
+        w.setStyleSheet("background-image: url(images/" + self.__theme + "/Perdu.png);")
+
 
     def restart(self):
         self.__labelStatut.setText("")
