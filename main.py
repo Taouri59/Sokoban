@@ -3,32 +3,33 @@
 # importation des librairies nécessaires
 import sys
 from PyQt5.QtWidgets import QApplication
-from model.grid import Grid
+
+from views.EditorView import EditorView
 from views.MainMenu import MainMenu
-from controllers.crtlMouvement import CrtlMouvement
+from views.gridView import GridView
 
 
 class App(QApplication):
     def __init__(self, sys_argv):
         super(App, self).__init__(sys_argv)
-        self.__model = Grid()
-        self.__controller = CrtlMouvement()
+        self.__view = None
+        self.mainMenu()
+
+    def mainMenu(self):
         self.__view = MainMenu(self)
-        self.__view.setWindowTitle("Sokoban")
+        self.__view.setWindowTitle("SOKOBAN")
         self.__view.show()
 
-    def setView(self, view):
-        self.__view = view
+    def Game(self):
+        self.__view = GridView(self)
+        self.__view.setWindowTitle("SOKOBAN")
         self.__view.show()
 
-    def getView(self):
-        return self.__view
+    def editor(self):
+        self.__view = EditorView(self)
+        self.__view.setWindowTitle("SOKOBAN - EDITOR")
+        self.__view.show()
 
-    def getModel(self):
-        return self.__model
-
-    def getController(self):
-        return self.__controller
 
 # Main
 if __name__ == '__main__':

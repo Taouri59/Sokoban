@@ -8,11 +8,11 @@ from views.apparenceView import ApparenceView
 
 
 class GridView(QMainWindow):
-    def __init__(self, app, model: Grid, controller: CrtlMouvement):
+    def __init__(self, app):
         super(GridView, self).__init__()
         self.__app = app
-        self.__model = model
-        self.__controller = controller
+        self.__model = Grid(self)
+        self.__controller = CrtlMouvement(self)
         self.__theme = "Naruto"
         self.__secondView = None
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
@@ -169,5 +169,5 @@ class GridView(QMainWindow):
         self.updateView()
 
     def quit(self):
-        exit(0)
-        # self.__app.setView(MainMenu(self.__app))
+        self.__app.mainMenu()
+        self.close()

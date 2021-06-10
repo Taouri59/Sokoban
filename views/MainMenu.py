@@ -2,7 +2,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
-from views.gridView import GridView
 
 
 class MainMenu(QMainWindow):
@@ -24,11 +23,7 @@ class MainMenu(QMainWindow):
         title.setFixedSize(640, 128)
         w.layout().addWidget(title)
 
-        hbox = QWidget()
-        hbox.setFixedSize(640, 50)
-        hbox.setLayout(QHBoxLayout())
-        hbox.layout().setContentsMargins(0, 0, 0, 0)
-        hbox.layout().setAlignment(QtCore.Qt.AlignCenter)
+        hbox = self.genHbox()
         button_start = QPushButton("Jouer")
         button_start.setStyleSheet("background-color: #74992e;")
         button_start.setFixedSize(100, 50)
@@ -36,26 +31,36 @@ class MainMenu(QMainWindow):
         hbox.layout().addWidget(button_start)
         w.layout().addWidget(hbox)
 
-        hbox2 = QWidget()
-        hbox2.setFixedSize(640, 50)
-        hbox2.setLayout(QHBoxLayout())
-        hbox2.layout().setContentsMargins(0, 0, 0, 0)
-        hbox2.layout().setAlignment(QtCore.Qt.AlignCenter)
+        hbox = self.genHbox()
+        button_editor = QPushButton("Editeur")
+        button_editor.setStyleSheet("background-color: #74992e;")
+        button_editor.setFixedSize(100, 50)
+        button_editor.clicked.connect(self.editor)
+        hbox.layout().addWidget(button_editor)
+        w.layout().addWidget(hbox)
+
+        hbox = self.genHbox()
         button_quit = QPushButton("Quitter")
         button_quit.setStyleSheet("background-color: #74992e;")
         button_quit.setFixedSize(100, 50)
-        button_quit.clicked.connect(self.quit)
-        hbox2.layout().addWidget(button_quit)
-        w.layout().addWidget(hbox2)
+        button_quit.clicked.connect(quit)
+        hbox.layout().addWidget(button_quit)
+        w.layout().addWidget(hbox)
 
         self.statusBar().setStyleSheet("border: 1px solid black")
         self.statusBar().addPermanentWidget(QLabel("©Copyright, tous droit réservée au groupe Ballas A Fonddd"), 1)
         self.setCentralWidget(w)
 
-    def start(self):
-        self.__app.setView(GridView(self.__app, self.__app.getModel(), self.__app.getController()))
-        self.__app.getModel().setView(self.__app.getView())
-        self.__app.getController().setView(self.__app.getView())
+    def genHbox(self) -> QWidget:
+        hbox = QWidget()
+        hbox.setFixedSize(640, 50)
+        hbox.setLayout(QHBoxLayout())
+        hbox.layout().setContentsMargins(0, 0, 0, 0)
+        hbox.layout().setAlignment(QtCore.Qt.AlignCenter)
+        return hbox
 
-    def quit(self):
-        exit(0)
+    def start(self):
+        self.__app.Game()
+
+    def editor(self):
+        self.__app.editor()

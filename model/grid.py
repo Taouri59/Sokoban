@@ -4,22 +4,19 @@ from os import walk
 from random import shuffle
 
 class Grid():
-    def __init__(self):
+    def __init__(self, view):
         self.__level = "grid0.txt"
         self.__nbCaseX = 10
         self.__nbCaseY = 10
         self.__tailleCase = 64
         self.__grid = []
         self.__posJoueur = [self.__nbCaseY//2, self.__nbCaseX//2]
-        self.__view = None
+        self.__view = view
         self.generateGrid()
         self.__victorySound = QSound('sounds/victorySound.wav')
         self.__defeatSound = QSound('sounds/defeatSound.wav')
         self.__boxDrop = QSound('sounds/boxDrop.wav')
         self.__fallingGuy = QSound('sounds/fallingGuy.wav')
-
-    def setView(self, view):
-        self.__view = view
 
     def getNbCaseX(self):
         return self.__nbCaseX

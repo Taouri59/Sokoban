@@ -1,5 +1,5 @@
 # importation des librairie nécessaire
-from os import walk, listdir
+from os import walk
 from PyQt5.QtWidgets import *
 
 
