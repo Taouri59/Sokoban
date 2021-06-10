@@ -125,7 +125,7 @@ class GridView(QMainWindow):
         self.__labelStatut.setText("Félicitations ! Vous avez gagné en : " + str(self.__nbOfMovements) + " mouvements !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
-        w.setStyleSheet("background-image: url(images/" + self.__theme + "/Bravo.png);")
+        w.setStyleSheet("border-image: url(images/"+self.__theme+"/Bravo.png) 0 0 0 0 stretch stretch;")
         self.__GridLayout.addWidget(w, 0, 0)
 
     def ecranDefaite(self):
@@ -133,7 +133,7 @@ class GridView(QMainWindow):
         self.__labelStatut.setText("Vous avez perdu ! Vous avez coincé une caisse !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
-        w.setStyleSheet("background-image: url(images/" + self.__theme + "/Perdu.png);")
+        w.setStyleSheet("border-image: url(images/"+self.__theme+"/Perdu.png) 0 0 0 0 stretch stretch;")
         self.__GridLayout.addWidget(w, 0, 0)
 
 
