@@ -1,6 +1,5 @@
 # importation des librairies utiles
-from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, QDialog, QStackedLayout
+from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, QDialog
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid

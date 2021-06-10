@@ -3,6 +3,7 @@ from PyQt5.QtMultimedia import QSound
 from os import walk
 from random import shuffle
 
+
 class Grid():
     def __init__(self, view):
         self.__level = "grid0.txt"
@@ -10,7 +11,7 @@ class Grid():
         self.__nbCaseY = 10
         self.__tailleCase = 64
         self.__grid = []
-        self.__posJoueur = [self.__nbCaseY//2, self.__nbCaseX//2]
+        self.__posJoueur = [self.__nbCaseY // 2, self.__nbCaseX // 2]
         self.__view = view
         self.generateGrid()
         self.__victorySound = QSound('sounds/victorySound.wav')
@@ -75,8 +76,8 @@ class Grid():
         return True
 
     def deplacerJoueur(self, sens):
-        new_ligne = self.__posJoueur[0]+sens[0]
-        new_colonne = self.__posJoueur[1]+sens[1]
+        new_ligne = self.__posJoueur[0] + sens[0]
+        new_colonne = self.__posJoueur[1] + sens[1]
         caisse_deplacer = False
         # Verifie que la prochaine position du joueur est dans la grille
         if not (0 <= new_ligne < self.__nbCaseY and 0 <= new_colonne < self.getNbCaseX()):
@@ -107,7 +108,7 @@ class Grid():
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
         # si le joueur est sur un trou rebouché
-        if self.__grid[new_ligne-sens[0]][new_colonne-sens[1]] == 6:
+        if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
         # si c'est une case vide
@@ -122,9 +123,8 @@ class Grid():
             self.playDefeatSound()
             self.__view.ecranDefaite()
 
-
     def generateGrid(self):
-        with open("grids/"+self.__level, "r") as file:
+        with open("grids/" + self.__level, "r") as file:
             line = file.readline()
             i = 0
             while line:
@@ -141,12 +141,14 @@ class Grid():
                     j += 1
                     n = ""
                 self.__grid[i].append(int(n))
+                if int(n) == 4:
+                    self.__posJoueur = [i, j]
                 line = file.readline()
                 i += 1
 
     def regenerateGrid(self):
         self.__grid = []
-        self.__posJoueur = [self.__nbCaseY//2, self.__nbCaseX//2]
+        self.__posJoueur = [self.__nbCaseY // 2, self.__nbCaseX // 2]
         self.generateGrid()
 
     def isGagner(self) -> bool:
@@ -160,15 +162,17 @@ class Grid():
         for i in range(len(self.__grid)):
             for j in range(len(self.__grid[i])):
                 if self.__grid[i][j] == 2:
-                    for k in [-1,1]:
-                        for l in [-1,1]:
-                            if i+k in [-1,len(self.__grid)] and j+l in [-1,len(self.__grid[i])]:
+                    for k in [-1, 1]:
+                        for l in [-1, 1]:
+                            if i + k in [-1, len(self.__grid)] and j + l in [-1, len(self.__grid[i])]: # si la caisse est dans un angle de la grille
                                 return True
-                            elif i+k in [-1,len(self.__grid)] and self.__grid[i][j+l]==1:
+                            elif i + k in [-1, len(self.__grid)] and self.__grid[i][j + l] == 1:
                                 return True
-                            elif j+l in [-1,len(self.__grid[i])] and self.__grid[i+k][j]==1:
+                            elif j + l in [-1, len(self.__grid[i])] and self.__grid[i + k][j] == 1:
                                 return True
-                            elif self.__grid[i][j+l]==1 and self.__grid[i+k][j]==1:
+                            elif i + k in [-1, len(self.__grid)] or j + l in [-1, len(self.__grid[i])]:
+                                continue
+                            elif self.__grid[i][j + l] == 1 and self.__grid[i + k][j] == 1:
                                 return True
         return False
 
@@ -183,7 +187,3 @@ class Grid():
 
     def playFallingGuy(self):
         self.__fallingGuy.play()
-
-
-
-
