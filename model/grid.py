@@ -64,10 +64,16 @@ class Grid():
         elif self.__grid[newPosLig][newPosCol] == 3:
             self.__grid[newPosLig][newPosCol] = 5
             self.playBoxDropSound()
-
         # si c'est un trou rebouché
         elif self.__grid[newPosLig][newPosCol] == 5:
+            # si la caisse est sur un trou rebouché
+            if self.__grid[newPosLig - sens[0]][newPosCol - sens[1]] == 7:
+                self.__grid[newPosLig - sens[0]][newPosCol - sens[1]] = 5
             self.__grid[newPosLig][newPosCol] = 7
+        # si la caisse est sur un trou rebouché
+        elif self.__grid[newPosLig - sens[0]][newPosCol - sens[1]] == 7:
+            self.__grid[newPosLig - sens[0]][newPosCol - sens[1]] = 5
+            self.__grid[newPosLig][newPosCol] = 2
         # sinon
         else:
             self.__grid[newPosLig][newPosCol] = 2
@@ -88,8 +94,16 @@ class Grid():
         elif self.__grid[new_ligne][new_colonne] == 2:
             if not self.deplaceCaisse(new_ligne, new_colonne, sens):
                 return
+            # si c'est un trou rebouché
+            if self.__grid[new_ligne][new_colonne] == 5:
+                # si le joueur est sur un trou rebouché
+                if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
+                    self.setPosJoueur(new_ligne, new_colonne)
+                    self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
+                self.setPosJoueur(new_ligne, new_colonne)
+                self.__grid[new_ligne][new_colonne] = 6
             # si le joueur est sur un trou rebouché
-            if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
+            elif self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
                 self.setPosJoueur(new_ligne, new_colonne)
                 self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
             else:
@@ -99,11 +113,27 @@ class Grid():
         elif self.__grid[new_ligne][new_colonne] == 7:
             if not self.deplaceCaisse(new_ligne, new_colonne, sens):
                 return
+            # si c'est un trou rebouché
+            if self.__grid[new_ligne][new_colonne] == 5:
+                # si le joueur est sur un trou rebouché
+                if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
+                    self.setPosJoueur(new_ligne, new_colonne)
+                    self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
+                self.setPosJoueur(new_ligne, new_colonne)
+                self.__grid[new_ligne][new_colonne] = 6
+            # si le joueur est sur un trou rebouché
+            elif self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
+                self.setPosJoueur(new_ligne, new_colonne)
+                self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
             caisse_deplacer = True
         # si c'est un trou rebouché
         elif self.__grid[new_ligne][new_colonne] == 5:
+            # si le joueur est sur un trou rebouché
+            if self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] == 6:
+                self.setPosJoueur(new_ligne, new_colonne)
+                self.__grid[new_ligne - sens[0]][new_colonne - sens[1]] = 5
             self.setPosJoueur(new_ligne, new_colonne)
             self.__grid[new_ligne][new_colonne] = 6
         # si le joueur est sur un trou rebouché
@@ -157,7 +187,9 @@ class Grid():
                     return False
         return True
 
-    def isPerdu(self, grid=[]) -> bool:
+    def isPerdu(self, grid=None) -> bool:
+        if grid is None:
+            grid = []
         if len(grid) == 0:
             grid = self.__grid
         for i in range(len(grid)):
@@ -178,7 +210,6 @@ class Grid():
                                 continue
                             elif grid[i][j + l] == 1 and grid[i + k][j] == 1:
                                 return True
-        print("False")
         return False
 
     def playVictorySound(self):
