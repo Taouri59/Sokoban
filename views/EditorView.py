@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from os import walk
 
+from model.grid import Grid
+
 
 class EnumType(Enum):
     SOL = 0
@@ -75,9 +77,9 @@ class EditorView(QMainWindow):
         self.__type_case = EnumType.SOL
         # generation du nom du niveau
         self.__nameFile = "CustomLevel"
-        files = next(walk("grids"))[0]
+        files = next(walk("grids"))[2]
         i = 0
-        while (self.__nameFile + str(i) in files):
+        while ((self.__nameFile + str(i) + ".txt") in files):
             i += 1
         self.__nameFile += str(i)
 
@@ -151,6 +153,11 @@ class EditorView(QMainWindow):
         nbPerso = 0
         nbCaisse = 0
         nbTrou = 0
+        grid = []
+        for i in range(10):
+            grid.append([])
+            for j in range(10):
+                grid[i].append(0)
         for i in range(self.__GridLayout.count()):
             w = self.__GridLayout.itemAt(i).widget()
             if w.getTypeCase() == EnumType.JOUEUR:
@@ -159,6 +166,7 @@ class EditorView(QMainWindow):
                 nbCaisse += 1
             elif w.getTypeCase() == EnumType.TROU:
                 nbTrou += 1
+            grid[w.getPosLig()][w.getPosCol()] = w.getTypeCase().value
         if nbPerso <= 0:
             self.problemView("Manque le personnage")
             return False
@@ -170,6 +178,8 @@ class EditorView(QMainWindow):
         elif nbTrou != nbCaisse:
             self.problemView("Le nombre de trou doit-être egal au nombre de caisse")
             return False
+        if Grid.isPerdu(Grid(None), grid):
+            self.problemView("Niveaux impossible : une caisse est coincé !)")
         return True
 
     def removePerso(self):

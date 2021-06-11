@@ -121,7 +121,7 @@ class GridView(QMainWindow):
         self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
 
     def ecranVictoire(self):
-        self.setFocus()
+        self.__controller.setDeplacement(False)
         self.__labelStatut.setText("Félicitations ! Vous avez gagné en : " + str(self.__nbOfMovements) + " mouvements !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
@@ -129,7 +129,7 @@ class GridView(QMainWindow):
         self.__GridLayout.addWidget(w, 0, 0)
 
     def ecranDefaite(self):
-        self.setFocus()
+        self.__controller.setDeplacement(False)
         self.__labelStatut.setText("Vous avez perdu ! Vous avez coincé une caisse !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
@@ -142,7 +142,7 @@ class GridView(QMainWindow):
         self.__model.regenerateGrid()
         self.__nbOfMovements = 0
         self.updateView()
-        self.__controller.setFocus()
+        self.__controller.setDeplacement(True)
 
     def helpView(self):
         dialog = QDialog()

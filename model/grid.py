@@ -38,12 +38,11 @@ class Grid():
         niveaux = next(walk("grids"))[2]
         for i in range(len(niveaux)):
             if niveaux[i] == self.__level:
-                del niveaux[i]
-                if i != len(niveaux):
-                    niveaux[i] = niveaux[-1]
+                if i+1 == len(niveaux):
+                    self.__level = niveaux[0]
+                else:
+                    self.__level = niveaux[i+1]
                 break
-        shuffle(niveaux)
-        self.__level = niveaux[0]
         self.__grid = []
         self.generateGrid()
 
@@ -158,22 +157,28 @@ class Grid():
                     return False
         return True
 
-    def isPerdu(self) -> bool:
-        for i in range(len(self.__grid)):
-            for j in range(len(self.__grid[i])):
-                if self.__grid[i][j] == 2:
+    def isPerdu(self, grid=[]) -> bool:
+        if len(grid) == 0:
+            grid = self.__grid
+        for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                if grid[i][j] == 2:
                     for k in [-1, 1]:
                         for l in [-1, 1]:
-                            if i + k in [-1, len(self.__grid)] and j + l in [-1, len(self.__grid[i])]: # si la caisse est dans un angle de la grille
+                            # print("i+k :"+(i+k)+"j+l"+(j+l))
+                            # print(i + k in [-1, len(grid)])
+                            # print(j + l in [-1, len(grid[i])])
+                            if i + k in [-1, len(grid)] and j + l in [-1, len(grid[i])]: # si la caisse est dans un angle de la grille
                                 return True
-                            elif i + k in [-1, len(self.__grid)] and self.__grid[i][j + l] == 1:
+                            elif i + k in [-1, len(grid)] and grid[i][j + l] == 1:
                                 return True
-                            elif j + l in [-1, len(self.__grid[i])] and self.__grid[i + k][j] == 1:
+                            elif j + l in [-1, len(grid[i])] and grid[i + k][j] == 1:
                                 return True
-                            elif i + k in [-1, len(self.__grid)] or j + l in [-1, len(self.__grid[i])]:
+                            elif i + k in [-1, len(grid)] or j + l in [-1, len(grid[i])]:
                                 continue
-                            elif self.__grid[i][j + l] == 1 and self.__grid[i + k][j] == 1:
+                            elif grid[i][j + l] == 1 and grid[i + k][j] == 1:
                                 return True
+        print("False")
         return False
 
     def playVictorySound(self):
