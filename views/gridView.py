@@ -136,11 +136,13 @@ class GridView(QMainWindow):
         dialog = QDialog()
         dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.setWindowTitle("Aide")
-        dialog.setFixedSize(500, 500)
 
-        QLabel(
-            "<h1>Aide du jeu !</h1><p>Le but du jeu est de combler les trous en y plaçant les différentes pierres.</p><p>Vous pouvez vous déplacer en utilisant :</p><p> fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> fléche bas ( ou 's' ) pour aller vers le bas;</p><p> fléche gauche ( ou 'q' ) pour aller vers la gauche;</p><p> fléche droit ( ou 'd' ) pour aller vers la droite;</p>",
-            parent=dialog)
+        label = QLabel("<h1>Aide du jeu !</h1><p>Le but du jeu est de combler les trous en y plaçant les différentes pierres.</p><p>Vous pouvez vous déplacer en utilisant :</p><p> "
+                       "Fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> "
+                       "Fléche bas ( ou 's' ) pour aller vers le bas;</p><p> "
+                       "Fléche gauche ( ou 'q' ) pour aller vers la gauche;</p><p> Fléche droit ( ou 'd' ) pour aller vers la droite;</p>", parent=dialog)
+        label.adjustSize()
+        dialog.adjustSize()
 
         dialog.exec_()
 
