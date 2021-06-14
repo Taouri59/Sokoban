@@ -178,8 +178,8 @@ class EditorView(QMainWindow):
         elif nbTrou != nbCaisse:
             self.problemView("Le nombre de trou doit-être egal au nombre de caisse")
             return False
-        if Grid.isPerdu(Grid(None), grid):
-            self.problemView("Niveaux impossible : une caisse est coincé !)")
+        # if Grid.isPerdu(Grid(None), grid):
+        #    self.problemView("Niveaux impossible : une caisse est coincé !)")
         return True
 
     def removePerso(self):

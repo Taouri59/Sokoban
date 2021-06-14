@@ -44,7 +44,7 @@ class GridView(QMainWindow):
         statut_bar = self.statusBar()
         self.__nbOfMovements = 0
         self.__labelNbMove = QLabel()
-        self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Nombre de Mouvements : " + str(self.__nbOfMovements))
         self.__labelStatut = QLabel()
         self.__labelStatut.setText("")
         statut_bar.addPermanentWidget(self.__labelNbMove, 1)
@@ -52,7 +52,7 @@ class GridView(QMainWindow):
 
         # controller / central widget + GridLayout
         self.__GridLayout = QGridLayout(self.__controller)
-        self.__GridLayout.setContentsMargins(0,0,7,9)
+        self.__GridLayout.setContentsMargins(0, 0, 7, 9)
         self.__controller.setLayout(self.__GridLayout)
         self.setCentralWidget(self.__controller)
         self.__controller.setFocus()
@@ -75,7 +75,7 @@ class GridView(QMainWindow):
         self.__nbOfMovements += 1
 
     def updateView(self):
-        # suppresion de tous les widget enfant de GridLAyout (layout.removeAllWidget())
+        # suppresion de tous les widget enfant de GridLAyout (layout().removeAllWidget())
         for i in reversed(range(self.__GridLayout.count())):
             widget_to_remove = self.__GridLayout.itemAt(i).widget()
             # remove it from the layout list
@@ -84,58 +84,49 @@ class GridView(QMainWindow):
             widget_to_remove.setParent(None)
         # remplissage de la grille
         grid = self.__model.getGrid()
-        for i in range(len(grid)):
-            for j in range(len(grid[i])):
+        for i in range(len(grid[0])):
+            for j in range(len(grid[0][i])):
+                # arriere plan
                 case = QWidget()
                 case.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                if grid[i][j] == 0:  # case vide
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Sol.png);")
-                elif grid[i][j] == 1:  # mur
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Mur.png);")
-                elif grid[i][j] == 2:  # caisse
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
-                elif grid[i][j] == 3:  # trou
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou.png);")
-                elif grid[i][j] == 4:  # joueur
-                    case2 = QWidget()
-                    case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Sol.png);")
-                    self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Perso.png);")
-                elif grid[i][j] == 5:  # trou boucher
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
-                elif grid[i][j] == 6:  # trou boucher + joueur
-                    case2 = QWidget()
-                    case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
-                    self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Perso.png);")
-                elif grid[i][j] == 7:  # trou boucher + caisse
-                    case2 = QWidget()
-                    case2.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
-                    case2.setStyleSheet("background-image: url(images/"+self.__theme+"/Trou_reboucher.png);")
-                    self.__GridLayout.addWidget(case2, i, j)
-                    case.setStyleSheet("background-image: url(images/"+self.__theme+"/Caisse.png);")
+                if grid[0][i][j] == 0:  # Sol
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Sol.png);")
+                elif grid[0][i][j] == 1:  # mur
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Mur.png);")
+                elif grid[0][i][j] == 2:  # trou
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Trou.png);")
+                elif grid[0][i][j] == 3:  # trou rebouché
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Trou_reboucher.png);")
+                self.__GridLayout.addWidget(case, i, j)
+                # premier plan
+                case = QWidget()
+                case.setFixedSize(self.__model.getTailleCase(), self.__model.getTailleCase())
+                if grid[1][i][j] == 0:  # Rien
+                    continue
+                elif grid[1][i][j] == 1:  # Caisse
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Caisse.png);")
+                elif grid[1][i][j] == 2:  # joueur
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Perso.png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
-        self.__labelNbMove.setText("Nombre de Mouvements : "+str(self.__nbOfMovements))
+        self.__labelNbMove.setText("Nombre de Mouvements : " + str(self.__nbOfMovements))
 
-    def ecranVictoire(self):
+    def victoire(self):
         self.__controller.setDeplacement(False)
-        self.__labelStatut.setText("Félicitations ! Vous avez gagné en : " + str(self.__nbOfMovements) + " mouvements !")
+        self.__labelStatut.setText(
+            "Félicitations ! Vous avez gagné en : " + str(self.__nbOfMovements) + " mouvements !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
-        w.setStyleSheet("border-image: url(images/"+self.__theme+"/Bravo.png) 0 0 0 0 stretch stretch;")
+        w.setStyleSheet("border-image: url(images/" + self.__theme + "/Bravo.png) 0 0 0 0 stretch stretch;")
         self.__GridLayout.addWidget(w, 0, 0)
 
-    def ecranDefaite(self):
+    def defaite(self):
         self.__controller.setDeplacement(False)
         self.__labelStatut.setText("Vous avez perdu ! Vous avez coincé une caisse !")
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
-        w.setStyleSheet("border-image: url(images/"+self.__theme+"/Perdu.png) 0 0 0 0 stretch stretch;")
+        w.setStyleSheet("border-image: url(images/" + self.__theme + "/Perdu.png) 0 0 0 0 stretch stretch;")
         self.__GridLayout.addWidget(w, 0, 0)
-
 
     def restart(self):
         self.__labelStatut.setText("")
@@ -150,7 +141,9 @@ class GridView(QMainWindow):
         dialog.setWindowTitle("Aide")
         dialog.setFixedSize(500, 500)
 
-        QLabel("<h1>Aide du jeu !</h1><p>Le but du jeu est de combler les trous en y plaçant les différentes pierres.</p><p>Vous pouvez vous déplacer en utilisant :</p><p> fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> fléche bas ( ou 's' ) pour aller vers le bas;</p><p> fléche gauche ( ou 'q' ) pour aller vers la gauche;</p><p> fléche droit ( ou 'd' ) pour aller vers la droite;</p>", parent=dialog)
+        QLabel(
+            "<h1>Aide du jeu !</h1><p>Le but du jeu est de combler les trous en y plaçant les différentes pierres.</p><p>Vous pouvez vous déplacer en utilisant :</p><p> fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> fléche bas ( ou 's' ) pour aller vers le bas;</p><p> fléche gauche ( ou 'q' ) pour aller vers la gauche;</p><p> fléche droit ( ou 'd' ) pour aller vers la droite;</p>",
+            parent=dialog)
 
         dialog.exec_()
 
