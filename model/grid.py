@@ -1,11 +1,11 @@
 # importation des librairies nécessaires
 from PyQt5.QtMultimedia import QSound
-from os import walk
+from os import walk, path
 from random import shuffle
 
 
 class Grid():
-    def __init__(self, view):
+    def __init__(self, view, edit: bool = False):
         self.__level = "grid0.txt"
         self.__nbCaseX = 10
         self.__nbCaseY = 10
@@ -13,7 +13,7 @@ class Grid():
         self.__grid = []
         self.__posJoueur = [self.__nbCaseY // 2, self.__nbCaseX // 2]
         self.__view = view
-        self.generateGrid()
+        self.generateGrid(edit)
         self.__victorySound = QSound('sounds/victorySound.wav')
         self.__defeatSound = QSound('sounds/defeatSound.wav')
         self.__boxDrop = QSound('sounds/boxDrop.wav')
@@ -31,8 +31,16 @@ class Grid():
     def getGrid(self):
         return self.__grid
 
+    def setGrid(self, pos_lig: int, pos_col: int, val_bg: int, val_fg: int):
+        self.__grid[0][pos_lig][pos_col] = val_bg
+        self.__grid[1][pos_lig][pos_col] = val_fg
+
     def getPosJoueur(self):
         return self.__posJoueur
+
+    def setLevel(self, file_path: str):
+        print(path.relpath(file_path, "grids"))
+        self.__level = path.relpath(file_path, "grids")
 
     def changerLevel(self):
         niveaux = next(walk("grids"))[2]
@@ -82,7 +90,11 @@ class Grid():
             return
         # si c'est un trou
         elif self.__grid[0][new_ligne][new_colonne] == 2:
-            print("Oh tu as fallit tomber !")
+            self.__grid[1][self.__posJoueur[0]][self.__posJoueur[1]] = 0
+            self.__view.incrementNbMovement()
+            self.__view.updateView()
+            self.playDefeatSound()
+            self.__view.ecranDeFin("Oh non ! Vous êtes tomber dans un trou et un serpent blanc vous a graille !")
             return
         # Si il y a une caisse
         elif self.__grid[1][new_ligne][new_colonne] == 1:
@@ -94,96 +106,64 @@ class Grid():
         self.__view.updateView()
         if caisse_deplacer and self.isGagner():
             self.playVictorySound()
-            self.__view.victoire()
+            self.__view.ecranDeFin("Félicitations ! Vous avez gagné en : " + str(self.__view.getNbOfMovements()) + " mouvements !", True)
         elif caisse_deplacer and self.isPerdu():
             self.playDefeatSound()
-            self.__view.defaite()
+            self.__view.ecranDeFin("Dommage, vous avez coincè une caisse !")
 
-    def generateGrid(self):
-        # Recuperation de la grille 2D présent dans le fichier du niveau
-        grid_2D = []
+    def generateGrid(self, edit: bool = False):
+        """
+        Valeur pour l'arriere plan (grid[0])
+            0 = Sol
+            1 = Mur
+            2 = Trou
+            3 = Trou rebouché
+        Valeur pour le premier plan (grid[1])
+            0 = Rien
+            1 = Caisse
+            2 = Joueur
+        """
+        self.__grid = []
+        if edit:
+            # initialisation de la grille 3d qui permet de stocker 2 grille 2D,
+            # une pour l'arrière plan et une pour le premier plan
+            for i in range(2):
+                self.__grid.append([])
+                for j in range(self.__nbCaseY):
+                    self.__grid[i].append([])
+                    for k in range(self.__nbCaseX):
+                        self.__grid[i][j].append(0)
+            return
+        # Recuperation de la grille 3D présent dans le fichier du niveau
         with open("grids/" + self.__level, "r") as file:
             line = file.readline()
+            k = 0
             i = 0
+            self.__grid.append([])
             while line:
-                grid_2D.append([])
+                if line == '\n':
+                    self.__grid.append([])
+                    line = file.readline()
+                    k += 1
+                    i = 0
+                    continue
+                self.__grid[k].append([])
                 n = ""
                 j = 0
                 for char in line:
                     if char != " ":
                         n += char
                         continue
-                    grid_2D[i].append(int(n))
-                    if int(n) == 4:
+                    self.__grid[k][i].append(int(n))
+                    if k == 1 and self.__grid[k][i][j] == 2:
                         self.__posJoueur = [i, j]
                     j += 1
                     n = ""
-                grid_2D[i].append(int(n))
-                if int(n) == 4:
+                self.__grid[k][i].append(int(n))
+                if k == 1 and self.__grid[k][i][j] == 2:
                     self.__posJoueur = [i, j]
                 line = file.readline()
                 i += 1
-        # preparation de la grille 3d qui permet de stocker 2 grille 2D, une pour l'arrière plan et une pour le premier plan
-        self.__grid = []
-        for i in range(2):
-            self.__grid.append([])
-            for j in range(self.__nbCaseY):
-                self.__grid[i].append([])
-                for k in range(self.__nbCaseX):
-                    self.__grid[i][j].append(0)
-        # passage en 3D, grid[0] = arriere plan (Sol, Mur, Trou, trou rebouché) et grid[1] = premier plan (Joueur, Caisse)
-        """
-        Valeur pour l'arriere plan
-            0 = Sol
-            1 = Mur
-            2 = Trou
-            3 = Trou rebouché
-        Valeur pour le premier plan
-            0 = Rien
-            1 = Caisse
-            2 = Joueur
-        """
-        for i in range(len(grid_2D)):
-            for j in range(len(grid_2D[i])):
-                if grid_2D[i][j] == 0:  # Sol
-                    self.__grid[0][i][j] = 0
-                    self.__grid[1][i][j] = 0
-                elif grid_2D[i][j] == 1:  # Mur
-                    self.__grid[0][i][j] = 1
-                    self.__grid[1][i][j] = 0
-                elif grid_2D[i][j] == 2:  # Caisse sur sol
-                    self.__grid[0][i][j] = 0
-                    self.__grid[1][i][j] = 1
-                elif grid_2D[i][j] == 3:  # Trou
-                    self.__grid[0][i][j] = 2
-                    self.__grid[1][i][j] = 0
-                elif grid_2D[i][j] == 4:  # Joueur sur sol
-                    self.__grid[0][i][j] = 0
-                    self.__grid[1][i][j] = 2
-                elif grid_2D[i][j] == 5:  # Trou rebouché
-                    self.__grid[0][i][j] = 3
-                    self.__grid[1][i][j] = 0
-                elif grid_2D[i][j] == 6:  # Joueur sur un trou rebouché
-                    self.__grid[0][i][j] = 3
-                    self.__grid[1][i][j] = 2
-                elif grid_2D[i][j] == 7:  # Caisse sur un trou rebouché
-                    self.__grid[0][i][j] = 3
-                    self.__grid[1][i][j] = 1
-        # Affichage grille in cmd
-        print("Grille :")
-        for i in range(2):
-            if i == 0:
-                print("-Arriere plan :")
-            else:
-                print("-Premier plan :")
-            for j in range(len(self.__grid[i])):
-                print("[", end="")
-                for k in range(len(self.__grid[i][j])):
-                    if k != 0:
-                        print(",", end="")
-                    print(self.__grid[i][j][k], end="")
-                print("]")
-            print("")
 
     def regenerateGrid(self):
         self.__grid = []
@@ -197,11 +177,8 @@ class Grid():
                     return False
         return True
 
-    def isPerdu(self, grid=None) -> bool:
-        if grid is None:
-            grid = []
-        if len(grid) == 0:
-            grid = self.__grid
+    def isPerdu(self) -> bool:
+        grid = self.__grid
         for i in range(len(grid[0])):
             for j in range(len(grid[0][i])):
                 if grid[1][i][j] == 1:

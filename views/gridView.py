@@ -71,6 +71,9 @@ class GridView(QMainWindow):
     def getController(self):
         return self.__controller
 
+    def getNbOfMovements(self):
+        return self.__nbOfMovements
+
     def incrementNbMovement(self):
         self.__nbOfMovements += 1
 
@@ -111,21 +114,15 @@ class GridView(QMainWindow):
         # update nb movements
         self.__labelNbMove.setText("Nombre de Mouvements : " + str(self.__nbOfMovements))
 
-    def victoire(self):
+    def ecranDeFin(self, message: str, win: bool = False):
         self.__controller.setDeplacement(False)
-        self.__labelStatut.setText(
-            "Félicitations ! Vous avez gagné en : " + str(self.__nbOfMovements) + " mouvements !")
+        self.__labelStatut.setText(message)
         w = QWidget()
         w.setFixedSize(self.size().width(), self.size().height())
-        w.setStyleSheet("border-image: url(images/" + self.__theme + "/Bravo.png) 0 0 0 0 stretch stretch;")
-        self.__GridLayout.addWidget(w, 0, 0)
-
-    def defaite(self):
-        self.__controller.setDeplacement(False)
-        self.__labelStatut.setText("Vous avez perdu ! Vous avez coincé une caisse !")
-        w = QWidget()
-        w.setFixedSize(self.size().width(), self.size().height())
-        w.setStyleSheet("border-image: url(images/" + self.__theme + "/Perdu.png) 0 0 0 0 stretch stretch;")
+        if win:
+            w.setStyleSheet("border-image: url(images/" + self.__theme + "/Bravo.png) 0 0 0 0 stretch stretch;")
+        else:
+            w.setStyleSheet("border-image: url(images/" + self.__theme + "/Perdu.png) 0 0 0 0 stretch stretch;")
         self.__GridLayout.addWidget(w, 0, 0)
 
     def restart(self):
