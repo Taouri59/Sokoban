@@ -3,17 +3,19 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QLabel, QGridLayout, QWidget, 
 from PyQt5.QtCore import Qt
 from controllers.crtlMouvement import CrtlMouvement
 from model.grid import Grid
-from views.apparenceView import ApparenceView
+from views.themeView import ThemeView
 
 
 class GridView(QMainWindow):
     def __init__(self, app):
         super(GridView, self).__init__()
+        self.setWindowTitle("SOKOBAN")
         self.__app = app
         self.__model = Grid(self)
         self.__controller = CrtlMouvement(self)
         self.__theme = "Naruto"
         self.__secondView = None
+        self.__direction = "Down"
         self.setFixedSize(self.__model.getNbCaseX() * self.__model.getTailleCase(),
                           self.__model.getNbCaseY() * self.__model.getTailleCase())
         # menu
@@ -31,7 +33,7 @@ class GridView(QMainWindow):
         help_action.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         quit_action.triggered.connect(self.quit)
         restart_action.triggered.connect(self.restart)
-        theme_action.triggered.connect(self.apparenceView)
+        theme_action.triggered.connect(self.themeView)
         changer_niv.triggered.connect(self.changerLevel)
 
         menu_jeu.addAction(restart_action)
@@ -74,6 +76,9 @@ class GridView(QMainWindow):
     def getNbOfMovements(self):
         return self.__nbOfMovements
 
+    def setDirection(self, direction: str):
+        self.__direction = direction
+
     def incrementNbMovement(self):
         self.__nbOfMovements += 1
 
@@ -109,7 +114,7 @@ class GridView(QMainWindow):
                 elif grid[1][i][j] == 1:  # Caisse
                     case.setStyleSheet("background-image: url(images/" + self.__theme + "/Caisse.png);")
                 elif grid[1][i][j] == 2:  # joueur
-                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Perso.png);")
+                    case.setStyleSheet("background-image: url(images/" + self.__theme + "/Perso"+self.__direction+".png);")
                 self.__GridLayout.addWidget(case, i, j)
         # update nb movements
         self.__labelNbMove.setText("Nombre de Mouvements : " + str(self.__nbOfMovements))
@@ -146,8 +151,8 @@ class GridView(QMainWindow):
 
         dialog.exec_()
 
-    def apparenceView(self):
-        self.__secondView = ApparenceView(self)
+    def themeView(self):
+        self.__secondView = ThemeView(self)
         self.__secondView.show()
 
     def closeSecondView(self):

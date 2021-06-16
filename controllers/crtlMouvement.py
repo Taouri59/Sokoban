@@ -29,7 +29,7 @@ class CrtlMouvement(QWidget):
         elif evt.key() == 16777264:
             self.__view.helpView()
         elif evt.key() == 16777265:
-            self.__view.apparenceView()
+            self.__view.themeView()
         elif evt.key() == 16777249:
             self.__crtl = True
         elif self.__crtl and evt.key() == 82:

@@ -3,18 +3,24 @@ from os import walk
 from PyQt5.QtWidgets import *
 
 
-class ApparenceGrille(QWidget):
+class ThemeView(QMainWindow):
     def __init__(self, view):
+        super(ThemeView, self).__init__()
         self.__view = view
-        super(ApparenceGrille, self).__init__()
-        self.setLayout(QVBoxLayout(self))
-        self.setStyleSheet("border: 1px solid gray")
+        self.setWindowTitle("Settings - Theme")
+        self.setFixedSize(340, 450)
+
+        # Apercu + comboBox (central widget)
+        w = QWidget()
+        self.__view = view
+        w.setLayout(QVBoxLayout(w))
+        w.setStyleSheet("border: 1px solid gray")
 
         self.__apercu = QWidget()
         self.__apercu.setLayout(QGridLayout(self.__apercu))
         self.__apercu.setFixedSize(320, 320)
         self.__apercu.setStyleSheet("background-image: url(images/" + view.getTheme() + "/apercu.png)")
-        self.layout().addWidget(self.__apercu)
+        w.layout().addWidget(self.__apercu)
 
         HBox1 = QWidget()
         HBox1.setLayout(QHBoxLayout(HBox1))
@@ -27,22 +33,8 @@ class ApparenceGrille(QWidget):
         self.__ComboBox.setFixedSize(225, 25)
         HBox1.layout().addWidget(self.__ComboBox)
         HBox1.setFixedSize(HBox1.layout().totalMinimumSize())
-        self.layout().addWidget(HBox1)
-
-    def changeTheme(self):
-        self.__apercu.setStyleSheet("background-image: url(images/" + self.__ComboBox.currentText() + "/apercu.png)")
-
-    def apply(self):
-        self.__view.setTheme(self.__ComboBox.currentText())
-        self.__view.updateView()
-
-
-class ApparenceView(QMainWindow):
-    def __init__(self, view):
-        super(ApparenceView, self).__init__()
-        self.__view = view
-        self.setWindowTitle("Settings - Theme")
-        self.setFixedSize(340, 450)
+        w.layout().addWidget(HBox1)
+        self.setCentralWidget(w)
 
         # statut bar
         bar = self.statusBar()
@@ -54,14 +46,13 @@ class ApparenceView(QMainWindow):
         bar.addPermanentWidget(buttonApply)
         bar.addPermanentWidget(buttonCancel)
 
-        self.apparenceGrille()
+    def changeTheme(self):
+        self.__apercu.setStyleSheet("background-image: url(images/" + self.__ComboBox.currentText() + "/apercu.png)")
 
     def cancel(self):
         self.__view.closeSecondView()
 
     def apply(self):
-        self.centralWidget().apply()
+        self.__view.setTheme(self.__ComboBox.currentText())
+        self.__view.updateView()
         self.__view.closeSecondView()
-
-    def apparenceGrille(self):
-        self.setCentralWidget(ApparenceGrille(self.__view))

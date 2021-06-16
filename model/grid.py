@@ -93,6 +93,14 @@ class Grid():
         return True
 
     def deplacerJoueur(self, sens):
+        if sens == [-1, 0]:
+            self.__view.setDirection("Up")
+        elif sens == [1, 0]:
+            self.__view.setDirection("Down")
+        elif sens == [0, -1]:
+            self.__view.setDirection("Left")
+        else:
+            self.__view.setDirection("Right")
         new_ligne = self.__posJoueur[0] + sens[0]
         new_colonne = self.__posJoueur[1] + sens[1]
         caisse_deplacer = False

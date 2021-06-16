@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 class MainMenu(QMainWindow):
     def __init__(self, app):
         super(MainMenu, self).__init__()
+        self.setWindowTitle("SOKOBAN")
         self.setFixedSize(640, 640)
         self.setStyleSheet("background-color: gray;")
         self.__app = app

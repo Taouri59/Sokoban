@@ -29,6 +29,7 @@ class CaseButton(QPushButton):
         self.__val_bg = type_case[0]
         self.__val_fg = type_case[1]
         self.__view.getModel().setGrid(self.__pos_lig, self.__pos_col, self.__val_bg, self.__val_fg)
+        self.__view.setTestGood(False)
         self.updateView()
 
     def getPosLig(self):
@@ -64,7 +65,7 @@ class CaseButton(QPushButton):
         elif self.__val_fg == 1:  # Caisse
             w.setStyleSheet("background-image: url(images/Naruto/Caisse.png)")
         elif self.__val_fg == 2:  # Joueur
-            w.setStyleSheet("background-image: url(images/Naruto/Perso.png)")
+            w.setStyleSheet("background-image: url(images/Naruto/Perso"+self.__view.getDirection()+".png)")
             if not (self.__pos_lig == -1 and self.__pos_col == -1):
                 self.__view.getModel().setPosJoueur(self.__pos_lig, self.__pos_col)
         self.layout().addWidget(w)
@@ -79,6 +80,7 @@ class CaseButton(QPushButton):
 class EditorView(QMainWindow):
     def __init__(self, app):
         super(EditorView, self).__init__()
+        self.setWindowTitle("SOKOBAN - EDITOR")
         self.__app = app
         self.__grid = Grid(self, True)
         self.__grid2 = []
@@ -86,6 +88,7 @@ class EditorView(QMainWindow):
         self.__val_fg = 0
         self.__nbMovement = 0
         self.__testGood = False
+        self.__direction = "Down"
         # generation du nom du niveau
         self.__nameFile = "CustomLevel"
         files = next(walk("grids"))[2]
@@ -131,6 +134,7 @@ class EditorView(QMainWindow):
         # Grille
         vbox = QWidget()
         vbox.setLayout(QVBoxLayout())
+        vbox.setContentsMargins(0, 0, 0, 0)
         self.__w_name_file = QTextEdit()
         self.__w_name_file.setFixedSize(640, 25)
         self.__w_name_file.setText("<center>" + self.__nameFile + "</center>")
@@ -156,6 +160,15 @@ class EditorView(QMainWindow):
         w.layout().addWidget(vbox)
 
         self.setCentralWidget(w)
+
+    def setTestGood(self, t: bool):
+        self.__testGood = t
+
+    def getDirection(self):
+        return self.__direction
+
+    def setDirection(self, direction: str):
+        self.__direction = direction
 
     def getModel(self):
         return self.__grid
@@ -272,7 +285,11 @@ class EditorView(QMainWindow):
         label = QLabel("<h1>" + texte + "</h1", parent=dialog)
         label.adjustSize()
         dialog.adjustSize()
+        self.centralWidget().releaseKeyboard()
+        dialog.setFocus()
         dialog.exec_()
+        self.centralWidget().setFocus()
+        self.centralWidget().grabKeyboard()
 
     def updateView(self):
         for i in reversed(range(self.__GridLayout.count())):
@@ -284,6 +301,9 @@ class EditorView(QMainWindow):
             for j in range(len(grid[0][i])):
                 self.__GridLayout.addWidget(CaseButton(self, grid[0][i][j], grid[1][i][j], i, j), i, j)
 
+    def launchTest(self):
+        pass
+
     def testButton(self):
         if self.__button_test.text() == "stop":
             self.centralWidget().setDeplacement(False)
@@ -294,7 +314,6 @@ class EditorView(QMainWindow):
             return
         self.__grid2 = self.__grid.getGridCopy()
         self.centralWidget().setDeplacement(True)
-        self.__testGood = True
         self.__button_test.setText("stop")
 
     def incrementNbMovement(self):
@@ -309,6 +328,7 @@ class EditorView(QMainWindow):
         print("la")
         if win:
             self.problemView("Niveaux terminer : <br>"+txt)
+            self.__testGood = True
         else:
             self.__testGood = False
             self.problemView("Perdu : <br>" + txt)

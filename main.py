@@ -17,17 +17,14 @@ class App(QApplication):
 
     def mainMenu(self):
         self.__view = MainMenu(self)
-        self.__view.setWindowTitle("SOKOBAN")
         self.__view.show()
 
     def Game(self):
         self.__view = GridView(self)
-        self.__view.setWindowTitle("SOKOBAN")
         self.__view.show()
 
     def editor(self):
         self.__view = EditorView(self)
-        self.__view.setWindowTitle("SOKOBAN - EDITOR")
         self.__view.show()
 
 
