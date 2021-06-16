@@ -1,8 +1,11 @@
 # importation des librarie utiles
+from copy import copy
 from enum import Enum
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from os import walk
+
+from controllers.crtlEditor import CrtlEditor
 from model.grid import Grid
 
 
@@ -25,7 +28,7 @@ class CaseButton(QPushButton):
             self.__view.removePerso()
         self.__val_bg = type_case[0]
         self.__val_fg = type_case[1]
-        self.__view.getGrid().setGrid(self.__pos_lig, self.__pos_col, self.__val_bg, self.__val_fg)
+        self.__view.getModel().setGrid(self.__pos_lig, self.__pos_col, self.__val_bg, self.__val_fg)
         self.updateView()
 
     def getPosLig(self):
@@ -45,23 +48,25 @@ class CaseButton(QPushButton):
             w.setParent(None)
 
         # background
-        if self.__val_bg == 0:
+        if self.__val_bg == 0:  # Sol
             self.setStyleSheet("background-image: url(images/Naruto/Sol.png)")
-        elif self.__val_bg == 1:
+        elif self.__val_bg == 1:  # Mur
             self.setStyleSheet("background-image: url(images/Naruto/Mur.png)")
-        elif self.__val_bg == 2:
+        elif self.__val_bg == 2:  # Trou
             self.setStyleSheet("background-image: url(images/Naruto/Trou.png)")
-        elif self.__val_bg == 3:
+        elif self.__val_bg == 3:  # Trou rebouché
             self.setStyleSheet("background-image: url(images/Naruto/Trou_reboucher.png)")
 
         # foreground
         w = QWidget()
-        if self.__val_fg == 0:
+        if self.__val_fg == 0:  # Rien
             return
-        elif self.__val_fg == 1:
+        elif self.__val_fg == 1:  # Caisse
             w.setStyleSheet("background-image: url(images/Naruto/Caisse.png)")
-        elif self.__val_fg == 2:
+        elif self.__val_fg == 2:  # Joueur
             w.setStyleSheet("background-image: url(images/Naruto/Perso.png)")
+            if not (self.__pos_lig == -1 and self.__pos_col == -1):
+                self.__view.getModel().setPosJoueur(self.__pos_lig, self.__pos_col)
         self.layout().addWidget(w)
 
     def clic(self) -> None:
@@ -76,8 +81,11 @@ class EditorView(QMainWindow):
         super(EditorView, self).__init__()
         self.__app = app
         self.__grid = Grid(self, True)
+        self.__grid2 = []
         self.__val_bg = 0
         self.__val_fg = 0
+        self.__nbMovement = 0
+        self.__testGood = False
         # generation du nom du niveau
         self.__nameFile = "CustomLevel"
         files = next(walk("grids"))[2]
@@ -86,7 +94,8 @@ class EditorView(QMainWindow):
             i += 1
         self.__nameFile += str(i)
 
-        w = QWidget()
+        w = CrtlEditor(self)
+        w.setFocus()
         w.setLayout(QHBoxLayout())
 
         # menu
@@ -138,9 +147,17 @@ class EditorView(QMainWindow):
         w.layout().addWidget(vbox)
         self.__GridLayout = grid.layout()
 
+        # parametre / test
+        vbox = QWidget()
+        vbox.setLayout(QVBoxLayout())
+        self.__button_test = QPushButton("Tester le niveaux")
+        self.__button_test.clicked.connect(self.testButton)
+        vbox.layout().addWidget(self.__button_test)
+        w.layout().addWidget(vbox)
+
         self.setCentralWidget(w)
 
-    def getGrid(self):
+    def getModel(self):
         return self.__grid
 
     def setNameFile(self, name):
@@ -157,7 +174,7 @@ class EditorView(QMainWindow):
     def changeName(self):
         self.__nameFile = self.__w_name_file.toPlainText()
 
-    def verifLevel(self) -> bool:
+    def verifLevel(self, test: bool = False) -> bool:
         nbPerso = 0
         nbCaisse = 0
         nbTrou = 0
@@ -182,9 +199,13 @@ class EditorView(QMainWindow):
         elif nbTrou != nbCaisse:
             self.problemView("Le nombre de trou doit-être egal au nombre de caisse")
             return False
-        if self.__grid.isPerdu():
+        elif self.__grid.isPerdu():
             self.problemView("Niveaux impossible : une caisse est coincé !)")
             return False
+        if not test:
+            if not self.__testGood:
+                self.problemView("Niveaux non tester !")
+                return False
         return True
 
     def removePerso(self):
@@ -262,3 +283,33 @@ class EditorView(QMainWindow):
         for i in range(len(grid[0])):
             for j in range(len(grid[0][i])):
                 self.__GridLayout.addWidget(CaseButton(self, grid[0][i][j], grid[1][i][j], i, j), i, j)
+
+    def testButton(self):
+        if self.__button_test.text() == "stop":
+            self.centralWidget().setDeplacement(False)
+            self.__grid.changerGrid(self.__grid2)
+            self.__button_test.setText("tester le niveaux")
+            return
+        if not self.verifLevel(True):
+            return
+        self.__grid2 = self.__grid.getGridCopy()
+        self.centralWidget().setDeplacement(True)
+        self.__testGood = True
+        self.__button_test.setText("stop")
+
+    def incrementNbMovement(self):
+        self.__nbMovement += 1
+
+    def getNbOfMovements(self):
+        return self.__nbMovement
+
+    def ecranDeFin(self, txt: str, win: bool = False):
+        print("ici")
+        self.testButton()
+        print("la")
+        if win:
+            self.problemView("Niveaux terminer : <br>"+txt)
+        else:
+            self.__testGood = False
+            self.problemView("Perdu : <br>" + txt)
+        print("fini")

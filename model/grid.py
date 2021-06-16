@@ -31,9 +31,23 @@ class Grid():
     def getGrid(self):
         return self.__grid
 
+    def getGridCopy(self):
+        grid = []
+        for i in range(len(self.__grid)):
+            grid.append([])
+            for j in range(len(self.__grid[i])):
+                grid[i].append([])
+                for k in range(len(self.__grid[i][j])):
+                    grid[i][j].append(self.__grid[i][j][k])
+        return grid
+
     def setGrid(self, pos_lig: int, pos_col: int, val_bg: int, val_fg: int):
         self.__grid[0][pos_lig][pos_col] = val_bg
         self.__grid[1][pos_lig][pos_col] = val_fg
+
+    def changerGrid(self, grid):
+        self.__grid = grid
+        self.__view.updateView()
 
     def getPosJoueur(self):
         return self.__posJoueur
@@ -106,7 +120,9 @@ class Grid():
         self.__view.updateView()
         if caisse_deplacer and self.isGagner():
             self.playVictorySound()
+            print("a")
             self.__view.ecranDeFin("Félicitations ! Vous avez gagné en : " + str(self.__view.getNbOfMovements()) + " mouvements !", True)
+            print("b")
         elif caisse_deplacer and self.isPerdu():
             self.playDefeatSound()
             self.__view.ecranDeFin("Dommage, vous avez coincè une caisse !")
