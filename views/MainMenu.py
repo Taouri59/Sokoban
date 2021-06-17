@@ -49,7 +49,7 @@ class MainMenu(QMainWindow):
         w.layout().addWidget(hbox)
 
         self.statusBar().setStyleSheet("border: 1px solid black")
-        self.statusBar().addPermanentWidget(QLabel("©Copyright, tous droit réservée au groupe Ballas A Fonddd"), 1)
+        self.statusBar().addPermanentWidget(QLabel("©Copyright, tous droits réservés au groupe Ballas A Fonddd"), 1)
         self.setCentralWidget(w)
 
     def genHbox(self) -> QWidget:

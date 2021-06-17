@@ -81,7 +81,7 @@ class CaseButton(QPushButton):
 class EditorView(QMainWindow):
     def __init__(self, app):
         super(EditorView, self).__init__()
-        self.setWindowTitle("SOKOBAN - EDITOR")
+        self.setWindowTitle("SOKOBAN - EDITEUR")
         self.__app = app
         self.__grid = Grid(self, True)
         self.__grid2 = []
@@ -108,13 +108,13 @@ class EditorView(QMainWindow):
         menu = self.menuBar()
         # menu - file
         menu_file = menu.addMenu("File")
-        new_action = menu_file.addAction("New")
+        new_action = menu_file.addAction("Nouveau")
         new_action.triggered.connect(self.newLevel)
-        open_action = menu_file.addAction("Open...")
+        open_action = menu_file.addAction("Ouvrir")
         open_action.triggered.connect(self.openLevel)
-        save_action = menu_file.addAction("Save")
+        save_action = menu_file.addAction("Sauvegarder")
         save_action.triggered.connect(self.save)
-        quit_action = menu_file.addAction("Quit")
+        quit_action = menu_file.addAction("Quitter")
         quit_action.triggered.connect(self.quit)
         # menu - aide
         menu_help = menu.addMenu("Aide")
@@ -122,7 +122,7 @@ class EditorView(QMainWindow):
         help_action.triggered.connect(self.helpView)
         # menu - theme
         menu_setting = menu.addMenu("Options")
-        theme_action = menu_setting.addAction("Theme")
+        theme_action = menu_setting.addAction("Thème")
         theme_action.triggered.connect(self.themeView)
 
         # Scroll Area pour choix de la piece
@@ -171,20 +171,20 @@ class EditorView(QMainWindow):
         vbox2 = self.__genVbox()
         vbox2.layout().setAlignment(Qt.AlignTop)
         hbox = self.__genHbox()
-        hbox.layout().addWidget(QLabel("Nb move for 3 star : "))
+        hbox.layout().addWidget(QLabel("Mouvements 3 étoiles : "))
         self.__label_3_star = QLabel("?")
         hbox.layout().addWidget(self.__label_3_star)
         hbox.setFixedSize(150, 25)
         vbox2.layout().addWidget(hbox)
         hbox = self.__genHbox()
-        hbox.layout().addWidget(QLabel("Nb move for 2 star : "))
+        hbox.layout().addWidget(QLabel("Mouvements 2 étoiles : "))
         self.__label_2_star = QTextEdit("?")
         self.__label_2_star.setFixedSize(35, 25)
         hbox.layout().addWidget(self.__label_2_star)
         hbox.setFixedSize(150, 25)
         vbox2.layout().addWidget(hbox)
         hbox = self.__genHbox()
-        hbox.layout().addWidget(QLabel("Nb move for 1 star : "))
+        hbox.layout().addWidget(QLabel("Mouvement 1 étoile : "))
         self.__label_1_star = QTextEdit("?")
         self.__label_1_star.setFixedSize(35, 25)
         hbox.layout().addWidget(self.__label_1_star)
@@ -193,7 +193,7 @@ class EditorView(QMainWindow):
 
         vbox.layout().addWidget(vbox2)
 
-        self.__button_test = QPushButton("Tester le niveaux")
+        self.__button_test = QPushButton("Tester le niveau")
         self.__button_test.setStyleSheet("background-color: gray;")
         self.__button_test.clicked.connect(self.testButton)
         vbox.layout().addWidget(self.__button_test)
@@ -259,20 +259,20 @@ class EditorView(QMainWindow):
             self.problemView("Manque le personnage")
             return False
         elif nbPerso > 1:
-            self.problemView("Trop de personnage, replacer un personnage pour supprimer tout les autre")
+            self.problemView("Trop de personnages, replacer un personnage pour supprimer tous les autres")
             return False
         elif nbTrou <= 0:
             self.problemView("Il faut au minimum 1 trou !")
             return False
         elif nbTrou != nbCaisse:
-            self.problemView("Le nombre de trou doit-être egal au nombre de caisse<br>"+str(nbCaisse)+" Caisse / "+str(nbTrou)+" Trou !")
+            self.problemView("Le nombre de trou doit-être égal au nombre de caisses<br>"+str(nbCaisse)+" Caisse(s) / "+str(nbTrou)+" Trou(s) !")
             return False
         elif self.__grid.isPerdu():
-            self.problemView("Niveaux impossible : une caisse est coincé !)")
+            self.problemView("Niveau impossible : une caisse est coincé !)")
             return False
         if not test:
             if not self.__testGood:
-                self.problemView("Niveaux non tester !")
+                self.problemView("Niveau non testé !")
                 return False
         return True
 
@@ -365,17 +365,17 @@ class EditorView(QMainWindow):
         pass
 
     def testButton(self):
-        if self.__button_test.text() == "stop":
+        if self.__button_test.text() == "Stop":
             self.centralWidget().setDeplacement(False)
             self.__grid.changerGrid(self.__grid2)
-            self.__button_test.setText("tester le niveaux")
+            self.__button_test.setText("Tester le niveau")
             return
         if not self.verifLevel(True):
             return
         self.__grid2 = self.__grid.getGridCopy()
         self.__nbMovement = 0
         self.centralWidget().setDeplacement(True)
-        self.__button_test.setText("stop")
+        self.__button_test.setText("Stop")
 
     def incrementNbMovement(self):
         self.__nbMovement += 1
@@ -403,19 +403,19 @@ class EditorView(QMainWindow):
         label = QLabel("<h1>Aide pour l'Editeur !</h1>"
                        "<p>L'éditeur sert a créer et modifier des niveaux</p>"
                        "<p>Les raccourci :</p>"
-                       "<p>- Crtl+N : New level</p>"
-                       "<p>- Crtl+O : Open Level</p>"
-                       "<p>- Crtl+S : Save</p>"
+                       "<p>- Crtl+N : Nouveau niveau</p>"
+                       "<p>- Crtl+O : Ouvrir un niveau</p>"
+                       "<p>- Crtl+S : Sauvegarder</p>"
                        "<p>- Echap : Quitter l'éditeur</p>"
-                       "<p>- F1 : Afficher l'aide (cette fenetre)</p>"
-                       "<p>- F2 : Modifier le theme</p>"
-                       "<p>- T : Tester le niveaux</p>"
+                       "<p>- F1 : Afficher l'aide (cette fenêtre)</p>"
+                       "<p>- F2 : Modifier le thème</p>"
+                       "<p>- T : Tester le niveau</p>"
                        "<p>- & : Sol</p>"
                        "<p>- é : Mur</p>"
                        "<p>- \" : Trou</p>"
                        "<p>- ' : Caisse</p>"
                        "<p>- ( ; Joueur</p>"
-                       "<p>Lors du test du niveaux, vous pouvez vous deplacer en utilisant:</p><p> "
+                       "<p>Lors du test du niveau, vous pouvez vous déplacer en utilisant:</p><p> "
                        "- Fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> "
                        "- Fléche bas ( ou 's' ) pour aller vers le bas;</p><p> "
                        "- Fléche gauche ( ou 'q' ) pour aller vers la gauche;</p>"

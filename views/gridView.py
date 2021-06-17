@@ -28,7 +28,7 @@ class GridView(QMainWindow):
         changer_niv = QAction("Changer de niveaux", self)
         quit_action = QAction("Quitter", self)
         help_action = QAction("Afficher l'aide", self)
-        theme_action = QAction("Theme", self)
+        theme_action = QAction("Thème", self)
 
         help_action.triggered.connect(self.helpView)  # A modifier pour expliquer le but du jeu
         quit_action.triggered.connect(self.quit)

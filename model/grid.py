@@ -119,7 +119,7 @@ class Grid():
             self.__view.incrementNbMovement()
             self.__view.updateView()
             self.playDefeatSound()
-            self.__view.ecranDeFin("Oh non ! Vous êtes tomber dans un trou et un serpent blanc vous a graille !")
+            self.__view.ecranDeFin("Oh non ! Vous êtes tombé dans un trou et un serpent blanc vous a mangé !")
             return
         # Si il y a une caisse
         elif self.__grid[1][new_ligne][new_colonne] == 1:
@@ -138,11 +138,11 @@ class Grid():
                 star = 2
             elif self.__view.getNbOfMovements() <= self.__1star:
                 star = 1
-            self.__view.ecranDeFin("Félicitations ! Vous avez gagné en : " + str(self.__view.getNbOfMovements()) + " mouvements ! ("+str(star)+" etoiles)"
-                                   "<br>3 etoiles = "+str(self.__3star)+"<br>2 etoiles = "+str(self.__2star)+"<br>1 etoiles = "+str(self.__1star), True)
+            self.__view.ecranDeFin("Félicitations ! Vous avez gagné en : " + str(self.__view.getNbOfMovements()) + " mouvements ! ("+str(star)+" étoile(s))"
+                                   "<br>3 étoiles = "+str(self.__3star)+"<br>2 étoiles = "+str(self.__2star)+"<br>1 étoile = "+str(self.__1star), True)
         elif caisse_deplacer and self.isPerdu():
             self.playDefeatSound()
-            self.__view.ecranDeFin("Dommage, vous avez coincè une caisse !")
+            self.__view.ecranDeFin("Dommage, vous avez coincé une caisse !")
 
     def generateGrid(self, edit: bool = False):
         """
