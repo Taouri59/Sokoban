@@ -7,6 +7,7 @@ from os import walk
 
 from controllers.crtlEditor import CrtlEditor
 from model.grid import Grid
+from views.themeView import ThemeView
 
 
 class CaseButton(QPushButton):
@@ -50,22 +51,22 @@ class CaseButton(QPushButton):
 
         # background
         if self.__val_bg == 0:  # Sol
-            self.setStyleSheet("background-image: url(images/Naruto/Sol.png)")
+            self.setStyleSheet("background-image: url(images/"+self.__view.getTheme()+"/Sol.png)")
         elif self.__val_bg == 1:  # Mur
-            self.setStyleSheet("background-image: url(images/Naruto/Mur.png)")
+            self.setStyleSheet("background-image: url(images/"+self.__view.getTheme()+"/Mur.png)")
         elif self.__val_bg == 2:  # Trou
-            self.setStyleSheet("background-image: url(images/Naruto/Trou.png)")
+            self.setStyleSheet("background-image: url(images/"+self.__view.getTheme()+"/Trou.png)")
         elif self.__val_bg == 3:  # Trou rebouché
-            self.setStyleSheet("background-image: url(images/Naruto/Trou_reboucher.png)")
+            self.setStyleSheet("background-image: url(images/"+self.__view.getTheme()+"/Trou_reboucher.png)")
 
         # foreground
         w = QWidget()
         if self.__val_fg == 0:  # Rien
             return
         elif self.__val_fg == 1:  # Caisse
-            w.setStyleSheet("background-image: url(images/Naruto/Caisse.png)")
+            w.setStyleSheet("background-image: url(images/"+self.__view.getTheme()+"/Caisse.png)")
         elif self.__val_fg == 2:  # Joueur
-            w.setStyleSheet("background-image: url(images/Naruto/Perso"+self.__view.getDirection()+".png)")
+            w.setStyleSheet("background-image: url(images/"+self.__view.getTheme()+"/Perso"+self.__view.getDirection()+".png)")
             if not (self.__pos_lig == -1 and self.__pos_col == -1):
                 self.__view.getModel().setPosJoueur(self.__pos_lig, self.__pos_col)
         self.layout().addWidget(w)
@@ -89,6 +90,8 @@ class EditorView(QMainWindow):
         self.__nbMovement = 0
         self.__testGood = False
         self.__direction = "Down"
+        self.__secondView = None
+        self.__theme = "Naruto"
         # generation du nom du niveau
         self.__nameFile = "CustomLevel"
         files = next(walk("grids"))[2]
@@ -103,6 +106,7 @@ class EditorView(QMainWindow):
 
         # menu
         menu = self.menuBar()
+        # menu - file
         menu_file = menu.addMenu("File")
         new_action = menu_file.addAction("New")
         new_action.triggered.connect(self.newLevel)
@@ -112,10 +116,19 @@ class EditorView(QMainWindow):
         save_action.triggered.connect(self.save)
         quit_action = menu_file.addAction("Quit")
         quit_action.triggered.connect(self.quit)
+        # menu - aide
+        menu_help = menu.addMenu("Aide")
+        help_action = menu_help.addAction("Afficher l'aide")
+        help_action.triggered.connect(self.helpView)
+        # menu - theme
+        menu_setting = menu.addMenu("Options")
+        theme_action = menu_setting.addAction("Theme")
+        theme_action.triggered.connect(self.themeView)
 
         # Scroll Area pour choix de la piece
         scroll_content = QWidget()
         scroll_content.setLayout(QVBoxLayout())
+        self.scroll_layout = scroll_content.layout()
         scroll_content.layout().addWidget(CaseButton(self, 0, 0))
         scroll_content.layout().addWidget(CaseButton(self, 1, 0))
         scroll_content.layout().addWidget(CaseButton(self, 2, 0))
@@ -166,12 +179,14 @@ class EditorView(QMainWindow):
         hbox = self.__genHbox()
         hbox.layout().addWidget(QLabel("Nb move for 2 star : "))
         self.__label_2_star = QTextEdit("?")
+        self.__label_2_star.setFixedSize(35, 25)
         hbox.layout().addWidget(self.__label_2_star)
         hbox.setFixedSize(150, 25)
         vbox2.layout().addWidget(hbox)
         hbox = self.__genHbox()
         hbox.layout().addWidget(QLabel("Nb move for 1 star : "))
         self.__label_1_star = QTextEdit("?")
+        self.__label_1_star.setFixedSize(35, 25)
         hbox.layout().addWidget(self.__label_1_star)
         hbox.setFixedSize(150, 25)
         vbox2.layout().addWidget(hbox)
@@ -312,6 +327,11 @@ class EditorView(QMainWindow):
             if k == 0:
                 file.write('\n')
                 file.write('\n')
+        file.write('\n')
+        file.write('\n')
+        file.write("3star = "+self.__label_3_star.text()+"\n")
+        file.write("2star = " + self.__label_2_star.toPlainText() + "\n")
+        file.write("1star = " + self.__label_1_star.toPlainText())
         file.close()
 
     def quit(self):
@@ -366,11 +386,61 @@ class EditorView(QMainWindow):
     def ecranDeFin(self, txt: str, win: bool = False):
         self.testButton()
         if win:
+            if self.__label_3_star.text() == "?" or self.__label_3_star.text() > self.__nbMovement:
+                self.__label_3_star.setText(str(self.__nbMovement))
+                self.__label_2_star.setText(str(self.__nbMovement+10))
+                self.__label_1_star.setText(str(self.__nbMovement+25))
             self.problemView("Niveaux terminer : <br>"+txt)
             self.__testGood = True
         else:
             self.__testGood = False
             self.problemView("Perdu : <br>" + txt)
+
+    def helpView(self):
+        dialog = QDialog()
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.setWindowTitle("Aide")
+        label = QLabel("<h1>Aide pour l'Editeur !</h1>"
+                       "<p>L'éditeur sert a créer et modifier des niveaux</p>"
+                       "<p>Les raccourci :</p>"
+                       "<p>- Crtl+N : New level</p>"
+                       "<p>- Crtl+O : Open Level</p>"
+                       "<p>- Crtl+S : Save</p>"
+                       "<p>- Echap : Quitter l'éditeur</p>"
+                       "<p>- F1 : Afficher l'aide (cette fenetre)</p>"
+                       "<p>- F2 : Modifier le theme</p>"
+                       "<p>- T : Tester le niveaux</p>"
+                       "<p>- & : Sol</p>"
+                       "<p>- é : Mur</p>"
+                       "<p>- \" : Trou</p>"
+                       "<p>- ' : Caisse</p>"
+                       "<p>- ( ; Joueur</p>"
+                       "<p>Lors du test du niveaux, vous pouvez vous deplacer en utilisant:</p><p> "
+                       "- Fléche haut ( ou 'z' ) pour aller vers le haut;</p><p> "
+                       "- Fléche bas ( ou 's' ) pour aller vers le bas;</p><p> "
+                       "- Fléche gauche ( ou 'q' ) pour aller vers la gauche;</p>"
+                       "<p>- Fléche droit ( ou 'd' ) pour aller vers la droite;</p>", parent=dialog)
+        label.adjustSize()
+        dialog.adjustSize()
+
+        dialog.exec_()
+
+    def themeView(self):
+        self.__secondView = ThemeView(self)
+        self.__secondView.show()
+
+    def getTheme(self):
+        return self.__theme
+
+    def setTheme(self, theme: str):
+        self.__theme = theme
+        for i in range(self.scroll_layout.count()):
+            w = self.scroll_layout.itemAt(i).widget()
+            w.updateView()
+
+    def closeSecondView(self):
+        self.__secondView.close()
+        self.__secondView = None
 
     def closeEvent(self, event):
         self.centralWidget().releaseKeyboard()

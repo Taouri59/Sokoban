@@ -11,6 +11,9 @@ class Grid():
         self.__nbCaseY = 10
         self.__tailleCase = 64
         self.__grid = []
+        self.__3star = 0
+        self.__2star = 0
+        self.__1star = 0
         self.__posJoueur = [self.__nbCaseY // 2, self.__nbCaseX // 2]
         self.__view = view
         self.generateGrid(edit)
@@ -128,9 +131,15 @@ class Grid():
         self.__view.updateView()
         if caisse_deplacer and self.isGagner():
             self.playVictorySound()
-            print("a")
-            self.__view.ecranDeFin("Félicitations ! Vous avez gagné en : " + str(self.__view.getNbOfMovements()) + " mouvements !", True)
-            print("b")
+            star = 0
+            if self.__view.getNbOfMovements() <= self.__3star:
+                star = 3
+            elif self.__view.getNbOfMovements() <= self.__2star:
+                star = 2
+            elif self.__view.getNbOfMovements() <= self.__1star:
+                star = 1
+            self.__view.ecranDeFin("Félicitations ! Vous avez gagné en : " + str(self.__view.getNbOfMovements()) + " mouvements ! ("+str(star)+" etoiles)"
+                                   "<br>3 etoiles = "+str(self.__3star)+"<br>2 etoiles = "+str(self.__2star)+"<br>1 etoiles = "+str(self.__1star), True)
         elif caisse_deplacer and self.isPerdu():
             self.playDefeatSound()
             self.__view.ecranDeFin("Dommage, vous avez coincè une caisse !")
@@ -170,6 +179,8 @@ class Grid():
                     line = file.readline()
                     k += 1
                     i = 0
+                    if k == 2:
+                        break
                     continue
                 self.__grid[k].append([])
                 n = ""
@@ -188,6 +199,14 @@ class Grid():
                     self.__posJoueur = [i, j]
                 line = file.readline()
                 i += 1
+            # 3 star
+            self.__3star = int(line.split(" = ")[1])
+            line = file.readline()
+            # 2 star
+            self.__2star = int(line.split(" = ")[1])
+            line = file.readline()
+            # 1 star
+            self.__1star = int(line.split(" = ")[1])
 
     def regenerateGrid(self):
         self.__grid = []

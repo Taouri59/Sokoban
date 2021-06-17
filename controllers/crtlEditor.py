@@ -27,6 +27,10 @@ class CrtlEditor(QWidget):
 
         if evt.key() == 16777216:  # Echap
             self.__view.quit()
+        elif evt.key() == 16777264:
+            self.__view.helpView()
+        elif evt.key() == 16777265:
+            self.__view.themeView()
         elif evt.key() == 38:  # 1 &  (Sol)
             self.__view.setTypeCase([0, 0])
         elif evt.key() == 201:  # 2 é  (Mur)

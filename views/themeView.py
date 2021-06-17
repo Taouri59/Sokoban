@@ -13,7 +13,6 @@ class ThemeView(QMainWindow):
 
         # Apercu + comboBox (central widget)
         w = CrtlTheme(self)
-        self.__view = view
         w.setLayout(QVBoxLayout(w))
         w.setStyleSheet("border: 1px solid gray")
 
