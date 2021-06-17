@@ -30,7 +30,7 @@ class ThemeView(QMainWindow):
         for theme in next(walk("images"))[1]:
             self.__ComboBox.addItem(theme)
         self.__ComboBox.setCurrentText(view.getTheme())
-        self.__ComboBox.currentTextChanged.connect(self.changeTheme)
+        self.__ComboBox.currentTextChanged.connect(self.updateApercu)
         self.__ComboBox.setFixedSize(225, 25)
         HBox1.layout().addWidget(self.__ComboBox)
         HBox1.setFixedSize(HBox1.layout().totalMinimumSize())
@@ -47,23 +47,30 @@ class ThemeView(QMainWindow):
         bar.addPermanentWidget(buttonApply)
         bar.addPermanentWidget(buttonCancel)
 
-    def changeTheme(self, raccourci: bool = False):
-        if raccourci:
-            theme = self.__ComboBox.currentText()
-            for i in range(self.__ComboBox.count()):
-                if self.__ComboBox.itemText(i) == theme:
-                    if i+1 == self.__ComboBox.count():
-                        self.__ComboBox.setCurrentText(self.__ComboBox.itemText(0))
-                    else:
-                        self.__ComboBox.setCurrentText(self.__ComboBox.itemText(i+1))
-                    break
+    def changeTheme(self, inc: int = 0):
+        theme = self.__ComboBox.currentText()
+        for i in range(self.__ComboBox.count()):
+            if self.__ComboBox.itemText(i) == theme:
+                if i+inc == self.__ComboBox.count():
+                    self.__ComboBox.setCurrentText(self.__ComboBox.itemText(0))
+                elif i+inc == -1:
+                    self.__ComboBox.setCurrentText(self.__ComboBox.itemText(self.__ComboBox.count()-1))
+                else:
+                    self.__ComboBox.setCurrentText(self.__ComboBox.itemText(i+inc))
+                break
+        self.updateApercu()
+
+    def updateApercu(self):
         self.__apercu.setStyleSheet("background-image: url(images/" + self.__ComboBox.currentText() + "/apercu.png)")
 
     def cancel(self):
-        self.centralWidget().releaseKeyboard()
         self.__view.closeSecondView()
 
     def apply(self):
         self.__view.setTheme(self.__ComboBox.currentText())
         self.__view.updateView()
         self.cancel()
+
+    def closeEvent(self, event):
+        self.centralWidget().releaseKeyboard()
+        super(QMainWindow, self).closeEvent(event)

@@ -132,8 +132,7 @@ class EditorView(QMainWindow):
         w.layout().addWidget(scroll_area)
 
         # Grille
-        vbox = QWidget()
-        vbox.setLayout(QVBoxLayout())
+        vbox = self.__genVbox()
         vbox.setContentsMargins(0, 0, 0, 0)
         self.__w_name_file = QTextEdit()
         self.__w_name_file.setFixedSize(640, 25)
@@ -152,14 +151,55 @@ class EditorView(QMainWindow):
         self.__GridLayout = grid.layout()
 
         # parametre / test
-        vbox = QWidget()
-        vbox.setLayout(QVBoxLayout())
+        vbox = self.__genVbox()
+        vbox.setFixedSize(150, 640)
+        vbox.setStyleSheet("border: 1px solid black")
+
+        vbox2 = self.__genVbox()
+        vbox2.layout().setAlignment(Qt.AlignTop)
+        hbox = self.__genHbox()
+        hbox.layout().addWidget(QLabel("Nb move for 3 star : "))
+        self.__label_3_star = QLabel("?")
+        hbox.layout().addWidget(self.__label_3_star)
+        hbox.setFixedSize(150, 25)
+        vbox2.layout().addWidget(hbox)
+        hbox = self.__genHbox()
+        hbox.layout().addWidget(QLabel("Nb move for 2 star : "))
+        self.__label_2_star = QTextEdit("?")
+        hbox.layout().addWidget(self.__label_2_star)
+        hbox.setFixedSize(150, 25)
+        vbox2.layout().addWidget(hbox)
+        hbox = self.__genHbox()
+        hbox.layout().addWidget(QLabel("Nb move for 1 star : "))
+        self.__label_1_star = QTextEdit("?")
+        hbox.layout().addWidget(self.__label_1_star)
+        hbox.setFixedSize(150, 25)
+        vbox2.layout().addWidget(hbox)
+
+        vbox.layout().addWidget(vbox2)
+
         self.__button_test = QPushButton("Tester le niveaux")
+        self.__button_test.setStyleSheet("background-color: gray;")
         self.__button_test.clicked.connect(self.testButton)
         vbox.layout().addWidget(self.__button_test)
+
         w.layout().addWidget(vbox)
 
         self.setCentralWidget(w)
+
+    def __genVbox(self):
+        vbox = QWidget()
+        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setLayout(QVBoxLayout())
+        vbox.layout().setContentsMargins(0, 0, 0, 0)
+        return vbox
+
+    def __genHbox(self):
+        hbox = QWidget()
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setLayout(QHBoxLayout())
+        hbox.layout().setContentsMargins(0, 0, 0, 0)
+        return hbox
 
     def setTestGood(self, t: bool):
         self.__testGood = t
@@ -210,7 +250,7 @@ class EditorView(QMainWindow):
             self.problemView("Il faut au minimum 1 trou !")
             return False
         elif nbTrou != nbCaisse:
-            self.problemView("Le nombre de trou doit-être egal au nombre de caisse")
+            self.problemView("Le nombre de trou doit-être egal au nombre de caisse<br>"+str(nbCaisse)+" Caisse / "+str(nbTrou)+" Trou !")
             return False
         elif self.__grid.isPerdu():
             self.problemView("Niveaux impossible : une caisse est coincé !)")
@@ -313,6 +353,7 @@ class EditorView(QMainWindow):
         if not self.verifLevel(True):
             return
         self.__grid2 = self.__grid.getGridCopy()
+        self.__nbMovement = 0
         self.centralWidget().setDeplacement(True)
         self.__button_test.setText("stop")
 
@@ -323,13 +364,14 @@ class EditorView(QMainWindow):
         return self.__nbMovement
 
     def ecranDeFin(self, txt: str, win: bool = False):
-        print("ici")
         self.testButton()
-        print("la")
         if win:
             self.problemView("Niveaux terminer : <br>"+txt)
             self.__testGood = True
         else:
             self.__testGood = False
             self.problemView("Perdu : <br>" + txt)
-        print("fini")
+
+    def closeEvent(self, event):
+        self.centralWidget().releaseKeyboard()
+        super(QMainWindow, self).closeEvent(event)

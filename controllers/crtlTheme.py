@@ -11,9 +11,9 @@ class CrtlTheme(QWidget):
 
     def keyPressEvent(self, evt: QKeyEvent) -> None:
         if evt.key() == 16777235:  # up arrow
-            self.__view.getModel().deplacerJoueur([0, 1])
+            self.__view.changeTheme(-1)
         elif evt.key() == 16777237:  # down arrow
-            self.__view.getModel().deplacerJoueur([1, 0])
+            self.__view.changeTheme(1)
         elif evt.key() == 16777220:  # Enter
             self.__view.apply()
         elif evt.key() == 16777216:  # Echap
